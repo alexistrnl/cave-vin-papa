@@ -740,23 +740,12 @@ export default function CavePage() {
         <span className="absolute top-1 left-1 text-[10px] text-[#8b7355] opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity z-10">
           {displayLabel}
         </span>
-        <div className="absolute top-1 right-1 flex items-center gap-1 z-10">
-          {bottle.couleur && (
-            <span className={`text-[9px] px-1.5 py-0.5 rounded font-medium ${
-              bottle.couleur === 'rouge' ? 'bg-[#8B2635]/20 text-[#8B2635] border border-[#8B2635]/30' :
-              bottle.couleur === 'blanc' ? 'bg-[#d4af37]/20 text-[#b8941f] border border-[#d4af37]/40' :
-              'bg-[#f4a5b3]/20 text-[#d4728a] border border-[#f4a5b3]/40'
-            }`}>
-              {bottle.couleur === 'rose' ? 'Rosé' : bottle.couleur.charAt(0).toUpperCase() + bottle.couleur.slice(1)}
-            </span>
-          )}
-          {statusInfo && (
-            <div
-              className={`w-2.5 h-2.5 rounded-full border ${statusInfo.bg} ${statusInfo.border}`}
-              title={statusInfo.title}
-            />
-          )}
-        </div>
+        {statusInfo && (
+          <div
+            className={`absolute top-1 right-1 w-2.5 h-2.5 rounded-full border ${statusInfo.bg} ${statusInfo.border} z-10`}
+            title={statusInfo.title}
+          />
+        )}
         <span className="font-semibold text-[#2a2a2a] text-xs text-center w-full truncate whitespace-nowrap overflow-hidden text-ellipsis">
           {bottle.name}
         </span>
