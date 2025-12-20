@@ -122,10 +122,33 @@ export default function BottleModal({
     }
   };
 
+  // Fix iOS PWA: forcer le focus sur tap pour ouvrir le clavier
+  const handleInputPointerDown = (e: React.PointerEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const target = e.currentTarget;
+    if (target && document.activeElement !== target) {
+      // Petit délai pour iOS standalone
+      setTimeout(() => {
+        target.focus();
+      }, 0);
+    }
+  };
+
+  const handleInputTouchStart = (e: React.TouchEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const target = e.currentTarget;
+    if (target && document.activeElement !== target) {
+      // Petit délai pour iOS standalone
+      setTimeout(() => {
+        target.focus();
+      }, 0);
+    }
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70"
       onClick={handleOverlayClick}
+      role="dialog"
+      aria-modal="true"
     >
       <div
         className="bg-[#fbf7f0] border-2 border-[#d4af37] rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6"
@@ -150,7 +173,10 @@ export default function BottleModal({
               name="name"
               required
               defaultValue={initialBottle?.name || ""}
+              onPointerDown={handleInputPointerDown}
+              onTouchStart={handleInputTouchStart}
               className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37]"
+              style={{ WebkitUserSelect: 'text', userSelect: 'text', pointerEvents: 'auto' }}
             />
           </div>
 
@@ -167,7 +193,10 @@ export default function BottleModal({
               name="domaine"
               placeholder="ex: Château Margaux"
               defaultValue={initialBottle?.domaine || ""}
+              onPointerDown={handleInputPointerDown}
+              onTouchStart={handleInputTouchStart}
               className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] placeholder:text-[#8b7355]"
+              style={{ WebkitUserSelect: 'text', userSelect: 'text', pointerEvents: 'auto' }}
             />
           </div>
 
@@ -187,7 +216,10 @@ export default function BottleModal({
               max={new Date().getFullYear() + 1}
               placeholder="ex: 2015"
               defaultValue={initialBottle?.millesime || ""}
+              onPointerDown={handleInputPointerDown}
+              onTouchStart={handleInputTouchStart}
               className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] placeholder:text-[#8b7355]"
+              style={{ WebkitUserSelect: 'text', userSelect: 'text', pointerEvents: 'auto' }}
             />
           </div>
 
@@ -204,7 +236,10 @@ export default function BottleModal({
               name="region"
               placeholder="ex: Bordeaux, Bourgogne"
               defaultValue={initialBottle?.region || ""}
+              onPointerDown={handleInputPointerDown}
+              onTouchStart={handleInputTouchStart}
               className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] placeholder:text-[#8b7355]"
+              style={{ WebkitUserSelect: 'text', userSelect: 'text', pointerEvents: 'auto' }}
             />
           </div>
 
@@ -223,7 +258,10 @@ export default function BottleModal({
               min="0"
               placeholder="ex: 30"
               defaultValue={initialBottle?.price || ""}
+              onPointerDown={handleInputPointerDown}
+              onTouchStart={handleInputTouchStart}
               className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] placeholder:text-[#8b7355]"
+              style={{ WebkitUserSelect: 'text', userSelect: 'text', pointerEvents: 'auto' }}
             />
           </div>
 
@@ -238,7 +276,10 @@ export default function BottleModal({
               id="couleur"
               name="couleur"
               defaultValue={initialBottle?.couleur || ""}
+              onPointerDown={handleInputPointerDown}
+              onTouchStart={handleInputTouchStart}
               className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37]"
+              style={{ WebkitUserSelect: 'text', userSelect: 'text', pointerEvents: 'auto' }}
             >
               <option value="">--</option>
               <option value="rouge">Rouge</option>
@@ -260,7 +301,10 @@ export default function BottleModal({
               name="garde"
               placeholder="ex: G2027 ou G2027/2029"
               defaultValue={initialBottle?.garde || ""}
+              onPointerDown={handleInputPointerDown}
+              onTouchStart={handleInputTouchStart}
               className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] placeholder:text-[#8b7355]"
+              style={{ WebkitUserSelect: 'text', userSelect: 'text', pointerEvents: 'auto' }}
             />
             <p className="mt-1 text-xs text-[#8b7355]">
               Formats acceptés: 2027, 2027/2029, 2027-2029
