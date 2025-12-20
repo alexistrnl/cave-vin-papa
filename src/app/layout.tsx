@@ -51,9 +51,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
+    <html lang="fr" style={{ height: '100%', overflow: 'hidden', position: 'fixed', width: '100%' }}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${greatVibes.variable} antialiased`}
+        style={{ height: '100%', overflow: 'hidden', position: 'fixed', width: '100%', margin: 0, padding: 0 }}
       >
         <PWALinks />
         <AuthProvider>
