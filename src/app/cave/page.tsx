@@ -677,7 +677,7 @@ export default function CavePage() {
     const status = getGardeStatus(bottle.garde);
     const statusInfo = getStatusInfo(status);
 
-    // Styles selon la couleur
+    // Styles selon la couleur - différenciation visuelle uniquement par le fond (aucun texte)
     const getCouleurStyles = () => {
       if (!bottle.couleur) {
         return {
@@ -689,25 +689,28 @@ export default function CavePage() {
       }
       switch (bottle.couleur) {
         case 'rouge':
+          // Fond légèrement rosé / bordeaux très clair
           return {
-            bg: "bg-[#8B2635]/10",
-            border: "border-[#8B2635]/50",
-            hoverBg: "hover:bg-[#8B2635]/15",
-            hoverBorder: "hover:border-[#8B2635]/70",
+            bg: "bg-[#f5e8e8]",
+            border: "border-[#d4af37]/40",
+            hoverBg: "hover:bg-[#f0e0e0]",
+            hoverBorder: "hover:border-[#d4af37]/60",
           };
         case 'blanc':
+          // Fond ivoire / jaune très pâle
           return {
-            bg: "bg-[#faf8f0]",
-            border: "border-[#d4af37]/60",
-            hoverBg: "hover:bg-[#f9f7ed]",
-            hoverBorder: "hover:border-[#d4af37]/80",
+            bg: "bg-[#fefcf5]",
+            border: "border-[#d4af37]/50",
+            hoverBg: "hover:bg-[#fdf9f0]",
+            hoverBorder: "hover:border-[#d4af37]/70",
           };
         case 'rose':
+          // Fond rosé très clair
           return {
-            bg: "bg-[#fdf2f5]",
-            border: "border-[#f4a5b3]/50",
-            hoverBg: "hover:bg-[#fceef3]",
-            hoverBorder: "hover:border-[#f4a5b3]/70",
+            bg: "bg-[#fef5f8]",
+            border: "border-[#f4a5b3]/40",
+            hoverBg: "hover:bg-[#fef0f4]",
+            hoverBorder: "hover:border-[#f4a5b3]/60",
           };
         default:
           return {
@@ -789,11 +792,22 @@ export default function CavePage() {
   return (
     <main className="flex flex-col w-full">
       <div className="w-full mb-6">
-        <div className="mb-4">
-          <div className="flex items-center justify-between mb-1">
-            <h1 className="text-3xl font-semibold text-[#2a2a2a] tracking-wide">
-              {selectedClayette.name}
-            </h1>
+        <div className="mb-5">
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <h1 
+                className="text-3xl font-semibold tracking-wide mb-0.5"
+                style={{
+                  fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif',
+                  fontWeight: 600,
+                  letterSpacing: '0.05em',
+                  color: '#b8860b',
+                  textShadow: '0 1px 2px rgba(0,0,0,0.08)',
+                }}
+              >
+                {selectedClayette.name}
+              </h1>
+            </div>
             {movingFromKey && (
               <button
                 onClick={() => setMovingFromKey(null)}
@@ -819,11 +833,14 @@ export default function CavePage() {
                 setMovingFromKey(null);
               }}
               title={clayette.name}
-              className={`px-2 py-2 text-xs sm:text-sm font-medium rounded-full border transition-colors truncate focus:outline-none focus:ring-2 focus:ring-[#d4af37] ${
+              className={`px-3 py-2.5 text-sm sm:text-base font-semibold rounded-full border transition-all truncate focus:outline-none focus:ring-2 focus:ring-[#d4af37] ${
                 selectedClayetteId === clayette.id
-                  ? "border-[#d4af37] text-[#fbf7f0] bg-[#8B2635] shadow-sm"
-                  : "border-[#d4af37]/40 text-[#2a2a2a] hover:border-[#d4af37]/50 hover:bg-[#f8f4ea]"
+                  ? "border-[#d4af37] text-[#fbf7f0] bg-[#8B2635] shadow-[0_2px_4px_rgba(139,38,53,0.3)]"
+                  : "border-[#d4af37]/40 text-[#2a2a2a] bg-[#fefcf5] hover:border-[#d4af37]/60 hover:bg-[#faf8f0]"
               }`}
+              style={{
+                letterSpacing: '0.02em',
+              }}
             >
               Clayette {index + 1}
             </button>
@@ -834,11 +851,14 @@ export default function CavePage() {
               setMovingFromKey(null);
             }}
             title="Bas de cave"
-            className={`px-2 py-2 text-xs sm:text-sm font-medium rounded-full border transition-colors truncate focus:outline-none focus:ring-2 focus:ring-[#d4af37] ${
+            className={`px-3 py-2.5 text-sm sm:text-base font-semibold rounded-full border transition-all truncate focus:outline-none focus:ring-2 focus:ring-[#d4af37] ${
               selectedClayetteId === BAS_DE_CAVE_ID
-                ? "border-[#d4af37] text-[#fbf7f0] bg-[#8B2635] shadow-sm"
-                : "border-[#d4af37]/40 text-[#2a2a2a] hover:border-[#d4af37]/50 hover:bg-[#f8f4ea]"
+                ? "border-[#d4af37] text-[#fbf7f0] bg-[#8B2635] shadow-[0_2px_4px_rgba(139,38,53,0.3)]"
+                : "border-[#d4af37]/40 text-[#2a2a2a] bg-[#fefcf5] hover:border-[#d4af37]/60 hover:bg-[#faf8f0]"
             }`}
+            style={{
+              letterSpacing: '0.02em',
+            }}
           >
             Bas de cave
           </button>
