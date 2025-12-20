@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import BottleModal, { Bottle } from "@/components/cave/BottleModal";
 import BottleDetailsModal from "@/components/cave/BottleDetailsModal";
 import { supabase } from "@/lib/supabaseClient";
@@ -147,61 +147,73 @@ export default function CavePage() {
   // Utiliser le contexte d'authentification
   const { isReady } = useAuth();
 
+  // Fonction pour charger les bouteilles depuis Supabase (source de vérité unique)
+  const loadBottles = useCallback(async () => {
+    try {
+      console.log("[loadBottles] Chargement depuis Supabase (source de vérité unique)");
+      
+      // Charger les bouteilles pour toutes les clayettes
+      const { data: bottlesData, error } = await supabase
+        .from("bottles")
+        .select("*")
+        .in("clayette", [...clayettes.map(c => c.id), BAS_DE_CAVE_ID]);
+
+      if (error) {
+        console.error("Erreur lors du chargement depuis Supabase:", error);
+        return { source: "error", count: 0 };
+      }
+
+      if (bottlesData) {
+        // Mapper les bouteilles vers Record<CellKey, Bottle>
+        const mappedCells: Record<CellKey, Bottle> = {};
+        const mappedBasDeCaveCells: Record<CellKey, Bottle> = {};
+
+        bottlesData.forEach((bottle: any) => {
+          // Convertir position (integer) depuis Supabase en slotId (string "r1c3")
+          const slotId = convertPositionToSlotId(bottle.position);
+          const cellKey = getCellKey(bottle.clayette, slotId);
+          const mappedBottle: Bottle = {
+            id: bottle.id, // ID Supabase
+            name: bottle.nom, // Mapping nom (Supabase) -> name (React)
+            price: bottle.prix || undefined, // Mapping prix (Supabase) -> price (React)
+            garde: bottle.garde || undefined,
+            domaine: bottle.domaine || null,
+            millesime: bottle.millesime || null,
+            region: bottle.region || null,
+          };
+
+          if (bottle.clayette === BAS_DE_CAVE_ID) {
+            mappedBasDeCaveCells[cellKey] = mappedBottle;
+          } else {
+            mappedCells[cellKey] = mappedBottle;
+          }
+        });
+
+        setCells(mappedCells);
+        setBasDeCaveCells(mappedBasDeCaveCells);
+        
+        const totalCount = bottlesData.length;
+        console.log(`[loadBottles] ${totalCount} bouteilles chargées depuis Supabase`);
+        return { source: "supabase", count: totalCount };
+      }
+      
+      return { source: "supabase", count: 0 };
+    } catch (error) {
+      console.error("Erreur lors du chargement depuis Supabase:", error);
+      return { source: "error", count: 0 };
+    }
+  }, []);
+
   // Charger depuis Supabase au montage (seulement quand l'auth est prête)
+  const [loadStatus, setLoadStatus] = useState<{ source: string; count: number } | null>(null);
+  
   useEffect(() => {
     if (!isReady) {
       return; // Attendre que l'authentification soit prête
     }
 
-    const loadBottles = async () => {
-      try {
-        // Charger les bouteilles pour toutes les clayettes
-        const { data: bottlesData, error } = await supabase
-          .from("bottles")
-          .select("*")
-          .in("clayette", [...clayettes.map(c => c.id), BAS_DE_CAVE_ID]);
-
-        if (error) {
-          console.error("Erreur lors du chargement depuis Supabase:", error);
-          return;
-        }
-
-        if (bottlesData) {
-          // Mapper les bouteilles vers Record<CellKey, Bottle>
-          const mappedCells: Record<CellKey, Bottle> = {};
-          const mappedBasDeCaveCells: Record<CellKey, Bottle> = {};
-
-          bottlesData.forEach((bottle: any) => {
-            // Convertir position (integer) depuis Supabase en slotId (string "r1c3")
-            const slotId = convertPositionToSlotId(bottle.position);
-            const cellKey = getCellKey(bottle.clayette, slotId);
-            const mappedBottle: Bottle = {
-              id: bottle.id, // ID Supabase
-              name: bottle.nom, // Mapping nom (Supabase) -> name (React)
-              price: bottle.prix || undefined, // Mapping prix (Supabase) -> price (React)
-              garde: bottle.garde || undefined,
-              domaine: bottle.domaine || null,
-              millesime: bottle.millesime || null,
-              region: bottle.region || null,
-            };
-
-            if (bottle.clayette === BAS_DE_CAVE_ID) {
-              mappedBasDeCaveCells[cellKey] = mappedBottle;
-            } else {
-              mappedCells[cellKey] = mappedBottle;
-            }
-          });
-
-          setCells(mappedCells);
-          setBasDeCaveCells(mappedBasDeCaveCells);
-        }
-      } catch (error) {
-        console.error("Erreur lors du chargement depuis Supabase:", error);
-      }
-    };
-
-        loadBottles();
-      }, [isReady]); // Recharger quand l'auth devient prête
+    loadBottles().then(setLoadStatus);
+  }, [isReady, loadBottles]); // Recharger quand l'auth devient prête
 
 
   // Gérer Escape pour annuler le déplacement
@@ -439,11 +451,8 @@ export default function CavePage() {
 
         console.log("SUPABASE OK:", data);
 
-        // Mettre à jour le state local
-        setCurrentCells((prev) => ({
-          ...prev,
-          [selectedCellKey]: { ...bottleData, id: existingBottle.id },
-        }));
+        // Refetch depuis Supabase pour garantir la synchronisation entre appareils
+        await loadBottles().then(setLoadStatus);
 
         // Fermer la modale après sauvegarde réussie
         setIsEditModalOpen(false);
@@ -483,13 +492,8 @@ export default function CavePage() {
 
         console.log("SUPABASE OK:", data);
 
-        // Mettre à jour le state local avec l'ID retourné par Supabase
-        if (data) {
-          setCurrentCells((prev) => ({
-            ...prev,
-            [selectedCellKey]: { ...bottleData, id: data.id },
-          }));
-        }
+        // Refetch depuis Supabase pour garantir la synchronisation entre appareils
+        await loadBottles().then(setLoadStatus);
 
         // Fermer la modale après sauvegarde réussie
         setIsEditModalOpen(false);
@@ -529,12 +533,8 @@ export default function CavePage() {
 
       if (error) throw error;
 
-      // Mettre à jour le state local (optimistic UI)
-      setCurrentCells((prev) => {
-        const updated = { ...prev };
-        delete updated[selectedCellKey];
-        return updated;
-      });
+      // Refetch depuis Supabase pour garantir la synchronisation entre appareils
+      await loadBottles().then(setLoadStatus);
 
       // Fermer la modale détails
       setIsDetailsModalOpen(false);
@@ -757,6 +757,12 @@ export default function CavePage() {
 
   return (
     <main className="flex flex-col w-full">
+      {/* Debug temporaire - à supprimer après tests */}
+      {loadStatus && (
+        <div className="mb-2 p-2 bg-[#f5efe0] border border-[#d4af37]/40 rounded text-xs text-[#2a2a2a]">
+          📊 Debug: {loadStatus.count} bouteilles chargées depuis {loadStatus.source === "supabase" ? "Supabase (source de vérité)" : loadStatus.source}
+        </div>
+      )}
       <div className="w-full mb-6">
         <div className="mb-4">
           <div className="flex items-center justify-between mb-1">

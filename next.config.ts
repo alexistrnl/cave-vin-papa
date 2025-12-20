@@ -3,6 +3,19 @@ import withPWA from "next-pwa";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  async headers() {
+    return [
+      {
+        source: "/cave",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 const pwaConfig = withPWA({
@@ -13,6 +26,35 @@ const pwaConfig = withPWA({
   sw: "sw.js",
   scope: "/",
   publicExcludes: ["!noprecache/**/*"],
+  runtimeCaching: [
+    {
+      urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/.*/,
+      handler: "NetworkOnly",
+      options: {
+        cacheName: "supabase-api",
+        networkTimeoutSeconds: 10,
+      },
+    },
+    {
+      urlPattern: /^https:\/\/.*\.supabase\.co\/auth\/v1\/.*/,
+      handler: "NetworkOnly",
+      options: {
+        cacheName: "supabase-auth",
+        networkTimeoutSeconds: 10,
+      },
+    },
+    {
+      urlPattern: /\/cave/,
+      handler: "NetworkFirst",
+      options: {
+        cacheName: "cave-page",
+        networkTimeoutSeconds: 10,
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
+      },
+    },
+  ],
 });
 
 export default pwaConfig(nextConfig);
