@@ -97,19 +97,33 @@ select {
 
 /* Modales : garantir que le contenu peut recevoir les interactions */
 [role="dialog"],
-.fixed.inset-0 {
-  touch-action: auto;
-  pointer-events: auto;
+.fixed.inset-0[role="dialog"] {
+  touch-action: auto !important;
+  pointer-events: auto !important;
 }
 
-/* Contenu des modales : inputs toujours interactifs */
+/* Conteneur de contenu modal : touch-action auto pour iPad PWA */
+[role="dialog"] > div,
+.fixed.inset-0[role="dialog"] > div {
+  touch-action: auto !important;
+  pointer-events: auto !important;
+}
+
+/* Formulaire dans modale : touch-action auto pour iPad PWA */
+[role="dialog"] form,
+.fixed.inset-0[role="dialog"] form {
+  touch-action: auto !important;
+  pointer-events: auto !important;
+}
+
+/* Contenu des modales : inputs toujours interactifs - touch-action auto pour iPad */
 [role="dialog"] input,
 [role="dialog"] textarea,
 [role="dialog"] select,
-.fixed.inset-0 input,
-.fixed.inset-0 textarea,
-.fixed.inset-0 select {
-  touch-action: manipulation !important;
+.fixed.inset-0[role="dialog"] input,
+.fixed.inset-0[role="dialog"] textarea,
+.fixed.inset-0[role="dialog"] select {
+  touch-action: auto !important;
   pointer-events: auto !important;
   -webkit-user-select: text !important;
   user-select: text !important;
