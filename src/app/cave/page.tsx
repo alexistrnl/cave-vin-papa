@@ -68,8 +68,6 @@ const convertSlotIdToPosition = (slotIdOrPosition: string | number): number => {
   // Calculer la position: (row-1) * NB_COLONNES + col
   const computedPosition = (row - 1) * NB_COLONNES + col;
 
-  // Log temporaire pour debug
-  console.log(`[convertSlotIdToPosition] oldPosition="${slotIdOrPosition}", parsedRow=${row}, parsedCol=${col}, computedPosition=${computedPosition}, NB_COLONNES=${NB_COLONNES}`);
 
   return computedPosition;
 };
@@ -97,9 +95,6 @@ const convertPositionToSlotId = (position: number): string => {
   const col = ((position - 1) % NB_COLONNES) + 1;
 
   const slotId = `r${row}c${col}`;
-  
-  // Log temporaire pour debug
-  console.log(`[convertPositionToSlotId] position=${position}, computedRow=${row}, computedCol=${col}, slotId="${slotId}", NB_COLONNES=${NB_COLONNES}`);
 
   return slotId;
 };
@@ -150,8 +145,6 @@ export default function CavePage() {
   // Fonction pour charger les bouteilles depuis Supabase (source de vérité unique)
   const loadBottles = useCallback(async () => {
     try {
-      console.log("[loadBottles] Chargement depuis Supabase (source de vérité unique)");
-      
       // Charger les bouteilles pour toutes les clayettes
       const { data: bottlesData, error } = await supabase
         .from("bottles")
@@ -160,7 +153,7 @@ export default function CavePage() {
 
       if (error) {
         console.error("Erreur lors du chargement depuis Supabase:", error);
-        return { source: "error", count: 0 };
+        return;
       }
 
       if (bottlesData) {
@@ -191,28 +184,19 @@ export default function CavePage() {
 
         setCells(mappedCells);
         setBasDeCaveCells(mappedBasDeCaveCells);
-        
-        const totalCount = bottlesData.length;
-        console.log(`[loadBottles] ${totalCount} bouteilles chargées depuis Supabase`);
-        return { source: "supabase", count: totalCount };
       }
-      
-      return { source: "supabase", count: 0 };
     } catch (error) {
       console.error("Erreur lors du chargement depuis Supabase:", error);
-      return { source: "error", count: 0 };
     }
   }, []);
 
   // Charger depuis Supabase au montage (seulement quand l'auth est prête)
-  const [loadStatus, setLoadStatus] = useState<{ source: string; count: number } | null>(null);
-  
   useEffect(() => {
     if (!isReady) {
       return; // Attendre que l'authentification soit prête
     }
 
-    loadBottles().then(setLoadStatus);
+    loadBottles();
   }, [isReady, loadBottles]); // Recharger quand l'auth devient prête
 
 
@@ -452,7 +436,7 @@ export default function CavePage() {
         console.log("SUPABASE OK:", data);
 
         // Refetch depuis Supabase pour garantir la synchronisation entre appareils
-        await loadBottles().then(setLoadStatus);
+        await loadBottles();
 
         // Fermer la modale après sauvegarde réussie
         setIsEditModalOpen(false);
@@ -493,7 +477,7 @@ export default function CavePage() {
         console.log("SUPABASE OK:", data);
 
         // Refetch depuis Supabase pour garantir la synchronisation entre appareils
-        await loadBottles().then(setLoadStatus);
+        await loadBottles();
 
         // Fermer la modale après sauvegarde réussie
         setIsEditModalOpen(false);
@@ -534,7 +518,7 @@ export default function CavePage() {
       if (error) throw error;
 
       // Refetch depuis Supabase pour garantir la synchronisation entre appareils
-      await loadBottles().then(setLoadStatus);
+      await loadBottles();
 
       // Fermer la modale détails
       setIsDetailsModalOpen(false);
@@ -757,12 +741,6 @@ export default function CavePage() {
 
   return (
     <main className="flex flex-col w-full">
-      {/* Debug temporaire - à supprimer après tests */}
-      {loadStatus && (
-        <div className="mb-2 p-2 bg-[#f5efe0] border border-[#d4af37]/40 rounded text-xs text-[#2a2a2a]">
-          📊 Debug: {loadStatus.count} bouteilles chargées depuis {loadStatus.source === "supabase" ? "Supabase (source de vérité)" : loadStatus.source}
-        </div>
-      )}
       <div className="w-full mb-6">
         <div className="mb-4">
           <div className="flex items-center justify-between mb-1">
