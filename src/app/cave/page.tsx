@@ -175,7 +175,6 @@ export default function CavePage() {
             const mappedBottle: Bottle = {
               id: bottle.id, // ID Supabase
               name: bottle.nom, // Mapping nom (Supabase) -> name (React)
-              vintage: bottle.annee || undefined, // Mapping annee (Supabase) -> vintage (React)
               price: bottle.prix || undefined, // Mapping prix (Supabase) -> price (React)
               garde: bottle.garde || undefined,
               domaine: bottle.domaine || null,
@@ -401,7 +400,6 @@ export default function CavePage() {
         // Mise à jour d'une bouteille existante
         const payload = {
           nom: bottleData.name, // Mapping name (React) -> nom (Supabase)
-          annee: bottleData.vintage || null, // Mapping vintage (React) -> annee (Supabase)
           prix: bottleData.price || null, // Mapping price (React) -> prix (Supabase)
           garde: bottleData.garde || null,
           domaine: bottleData.domaine || null,
@@ -444,7 +442,6 @@ export default function CavePage() {
           clayette: keyParts.clayetteId,
           position: position, // Conversion slotId (string "r1c3") -> position (integer)
           nom: bottleData.name, // Mapping name (React) -> nom (Supabase)
-          annee: bottleData.vintage || null, // Mapping vintage (React) -> annee (Supabase)
           prix: bottleData.price || null, // Mapping price (React) -> prix (Supabase)
           garde: bottleData.garde || null,
           domaine: bottleData.domaine || null,
@@ -633,9 +630,6 @@ export default function CavePage() {
     }
 
     const parts: (string | React.ReactElement)[] = [];
-    if (bottle.vintage) {
-      parts.push(String(bottle.vintage));
-    }
     if (bottle.price !== undefined && bottle.price !== null) {
       parts.push(`${bottle.price}€`);
     }

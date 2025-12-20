@@ -5,7 +5,6 @@ import { useEffect, useRef } from "react";
 export interface Bottle {
   id: string;
   name: string;
-  vintage?: number;
   price?: number;
   garde?: string;
   domaine?: string | null;
@@ -97,9 +96,6 @@ export default function BottleModal({
     
     const bottle: Omit<Bottle, "id"> = {
       name: formData.get("name") as string,
-      vintage: formData.get("vintage")
-        ? parseInt(formData.get("vintage") as string, 10)
-        : undefined,
       price: formData.get("price")
         ? parseFloat(formData.get("price") as string)
         : undefined,
@@ -155,63 +151,6 @@ export default function BottleModal({
 
           <div>
             <label
-              htmlFor="vintage"
-              className="block text-sm font-medium mb-1 text-[#2a2a2a]"
-            >
-              Millésime
-            </label>
-            <input
-              type="number"
-              id="vintage"
-              name="vintage"
-              min="1900"
-              max="2100"
-              defaultValue={initialBottle?.vintage || ""}
-              className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37]"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="price"
-              className="block text-sm font-medium mb-1 text-[#2a2a2a]"
-            >
-              Prix
-            </label>
-            <input
-              type="number"
-              id="price"
-              name="price"
-              step="0.01"
-              min="0"
-              placeholder="ex: 30"
-              defaultValue={initialBottle?.price || ""}
-              className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] placeholder:text-[#8b7355]"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="garde"
-              className="block text-sm font-medium mb-1 text-[#2a2a2a]"
-            >
-              Garde
-            </label>
-            <input
-              type="text"
-              id="garde"
-              name="garde"
-              placeholder="ex: G2027 ou G2027/2029"
-              defaultValue={initialBottle?.garde || ""}
-              className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] placeholder:text-[#8b7355]"
-            />
-            <p className="mt-1 text-xs text-[#8b7355]">
-              Formats acceptés: 2027, 2027/2029, 2027-2029
-            </p>
-          </div>
-
-          <div>
-            <label
               htmlFor="domaine"
               className="block text-sm font-medium mb-1 text-[#2a2a2a]"
             >
@@ -262,6 +201,45 @@ export default function BottleModal({
               defaultValue={initialBottle?.region || ""}
               className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] placeholder:text-[#8b7355]"
             />
+          </div>
+
+          <div>
+            <label
+              htmlFor="price"
+              className="block text-sm font-medium mb-1 text-[#2a2a2a]"
+            >
+              Prix
+            </label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              step="0.01"
+              min="0"
+              placeholder="ex: 30"
+              defaultValue={initialBottle?.price || ""}
+              className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] placeholder:text-[#8b7355]"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="garde"
+              className="block text-sm font-medium mb-1 text-[#2a2a2a]"
+            >
+              Garde
+            </label>
+            <input
+              type="text"
+              id="garde"
+              name="garde"
+              placeholder="ex: G2027 ou G2027/2029"
+              defaultValue={initialBottle?.garde || ""}
+              className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] placeholder:text-[#8b7355]"
+            />
+            <p className="mt-1 text-xs text-[#8b7355]">
+              Formats acceptés: 2027, 2027/2029, 2027-2029
+            </p>
           </div>
 
           <div className="flex gap-3 justify-end pt-4">
