@@ -24,6 +24,7 @@ html,
 body {
   height: 100%;
   overflow: hidden;
+  overscroll-behavior: none;
   margin: 0;
   padding: 0;
 }
@@ -52,4 +53,28 @@ body::before {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* App Shell Structure */
+.app-shell {
+  height: 100svh;
+  height: 100vh; /* Fallback pour navigateurs sans support svh */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.app-header {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0; /* Important pour permettre le scroll dans un flex container */
 }
