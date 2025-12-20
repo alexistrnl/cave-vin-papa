@@ -1,36 +1,125 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# La Cave à Tournel - PWA
 
-## Getting Started
+Application PWA Next.js pour la gestion de cave à vin, avec Supabase et authentification anonyme.
 
-First, run the development server:
+## 🚀 Démarrage rapide
 
+### Prérequis
+
+- Node.js 18+ 
+- Compte Supabase avec une base de données configurée
+- Variables d'environnement Supabase
+
+### Installation
+
+1. Cloner le projet
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repo-url>
+cd cave-vin-pwa
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Installer les dépendances
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Configurer les variables d'environnement
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Créez un fichier `.env.local` à la racine :
 
-## Learn More
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
+```
 
-To learn more about Next.js, take a look at the following resources:
+4. Lancer le serveur de développement
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📦 Déploiement sur Vercel
 
-## Deploy on Vercel
+### 1. Préparer le projet
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Assurez-vous que tous les fichiers sont commités dans Git
+- Vérifiez que le build fonctionne localement : `npm run build`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 2. Déployer sur Vercel
+
+1. Connectez votre dépôt GitHub à [Vercel](https://vercel.com)
+2. Configurez les variables d'environnement dans **Settings > Environment Variables** :
+   - `NEXT_PUBLIC_SUPABASE_URL` : URL de votre projet Supabase
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` : Clé anonyme Supabase
+
+3. Vercel détectera automatiquement Next.js et utilisera les scripts `build` et `start`
+
+### 3. Vérifier le déploiement
+
+- Le build Vercel utilisera `npm run build` (qui inclut `--webpack` pour `next-pwa`)
+- La PWA sera automatiquement générée en production
+- Le service worker sera disponible à `/sw.js`
+
+## 📱 Installation PWA
+
+Une fois déployée sur Vercel, l'application peut être installée comme PWA :
+
+- **Chrome/Edge** : Menu > Installer l'application
+- **Safari (iOS)** : Partager > Sur l'écran d'accueil
+- **Firefox** : Menu > Installer
+
+## 🔧 Configuration
+
+### Variables d'environnement requises
+
+| Variable | Description | Où la trouver |
+|----------|-------------|---------------|
+| `NEXT_PUBLIC_SUPABASE_URL` | URL du projet Supabase | Dashboard Supabase > Settings > API |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clé anonyme Supabase | Dashboard Supabase > Settings > API |
+
+### Structure de la base de données
+
+La table `bottles` doit contenir les colonnes :
+- `nom` (text)
+- `annee` (integer, nullable)
+- `prix` (numeric, nullable)
+- `garde` (text, nullable)
+- `clayette` (text)
+- `position` (integer)
+- `user_id` (uuid, avec DEFAULT auth.uid())
+- `created_at` (timestamp)
+
+## 🛠️ Scripts disponibles
+
+```bash
+npm run dev      # Serveur de développement
+npm run build    # Build de production
+npm run start    # Serveur de production
+npm run lint     # Linter ESLint
+```
+
+## 📚 Technologies
+
+- **Next.js 16** (App Router)
+- **React 19**
+- **TypeScript**
+- **Tailwind CSS 4**
+- **Supabase** (Backend + Auth anonyme)
+- **next-pwa** (Service Worker + Manifest)
+
+## 🐛 Résolution de problèmes
+
+### Erreur "Variables d'environnement manquantes"
+
+Assurez-vous que `.env.local` est présent et contient les variables `NEXT_PUBLIC_SUPABASE_URL` et `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+
+### Erreur RLS sur Supabase
+
+Vérifiez que les policies Row-Level Security permettent l'accès aux utilisateurs authentifiés (anonymes ou non).
+
+### PWA ne s'installe pas
+
+- Vérifiez que vous êtes en HTTPS (requis pour PWA)
+- Vérifiez que le manifest est accessible à `/manifest.webmanifest`
+- Vérifiez les logs du navigateur pour les erreurs de service worker
