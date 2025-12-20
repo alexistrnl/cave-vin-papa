@@ -648,8 +648,7 @@ export default function CavePage() {
           <span className="absolute top-1 left-1 text-[10px] text-[#8b7355] opacity-0 group-hover:opacity-100 transition-opacity z-10">
             {displayLabel}
           </span>
-          <span className="text-sm">+</span>
-          <span className="whitespace-nowrap">Ajouter</span>
+          <span className="text-xl font-light text-[#8b7355]">+</span>
         </button>
       );
     }
