@@ -51,15 +51,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" style={{ height: '100%', overflow: 'hidden', position: 'fixed', width: '100%' }}>
+    <html lang="fr">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${greatVibes.variable} antialiased`}
-        style={{ height: '100%', overflow: 'hidden', position: 'fixed', width: '100%', margin: 0, padding: 0 }}
       >
         <PWALinks />
         <AuthProvider>
-          <div className="app-shell relative z-10">
-            <header className="app-header w-full bg-transparent relative">
+          <div id="app-shell">
+            <header id="app-header" className="w-full bg-transparent relative">
               <div className="mx-auto max-w-5xl px-6 pt-8">
                 <h1 
                   className="text-center relative z-10"
@@ -79,7 +78,7 @@ export default function RootLayout({
                 </h1>
               </div>
             </header>
-            <main className="app-content mx-auto w-full max-w-5xl px-4 pt-0 pb-12">
+            <main id="app-main" className="mx-auto w-full max-w-5xl px-4 pt-0 pb-12">
               <div className="bg-[#fbf7f0] border-2 border-[#d4af37] rounded-2xl shadow-2xl p-6 md:p-8 lg:p-10 relative">
                 <div className="absolute inset-2 border border-[#d4af37]/40 rounded-xl pointer-events-none"></div>
                 <div className="relative z-10">

@@ -20,26 +20,16 @@
   }
 }
 
-html {
-  height: 100%;
-  overflow: hidden;
-  overscroll-behavior: none;
-  margin: 0;
-  padding: 0;
-  position: fixed;
-  width: 100%;
-}
-
+html,
 body {
   height: 100%;
   overflow: hidden;
-  overscroll-behavior: none;
-  overscroll-behavior-y: none;
   margin: 0;
   padding: 0;
-  position: fixed;
-  width: 100%;
-  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  overscroll-behavior: none;
   background: radial-gradient(ellipse at center, #3d1a1a 0%, #2a0f0f 50%, #1a0a0a 100%);
   background-attachment: fixed;
   color: var(--foreground);
@@ -65,32 +55,32 @@ body::before {
 }
 
 /* App Shell Structure */
-.app-shell {
-  height: 100svh;
-  height: 100vh; /* Fallback pour navigateurs sans support svh */
-  max-height: 100svh;
-  max-height: 100vh; /* Fallback */
+#app-shell {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  background: inherit;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  position: relative;
   overscroll-behavior: none;
 }
 
-.app-header {
-  flex-shrink: 0;
+#app-header {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 50;
+  flex-shrink: 0;
 }
 
-.app-content {
-  flex: 1;
+#app-main {
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  overscroll-behavior: contain;
-  overscroll-behavior-y: contain;
-  overscroll-behavior-x: none;
   -webkit-overflow-scrolling: touch;
-  min-height: 0; /* Important pour permettre le scroll dans un flex container */
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  min-height: 0;
+  flex: 1;
 }
