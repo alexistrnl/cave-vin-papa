@@ -8,6 +8,9 @@ export interface Bottle {
   vintage?: number;
   price?: number;
   garde?: string;
+  domaine?: string | null;
+  millesime?: number | null;
+  region?: string | null;
 }
 
 interface BottleModalProps {
@@ -78,6 +81,20 @@ export default function BottleModal({
     const gardeInput = (formData.get("garde") as string) || "";
     const normalizedGarde = gardeInput ? normalizeGarde(gardeInput) : undefined;
     
+    // Gérer les nouveaux champs : null si vide, sinon valeur
+    const domaineInput = (formData.get("domaine") as string) || "";
+    const domaineValue = domaineInput.trim() ? domaineInput.trim() : null;
+    
+    const regionInput = (formData.get("region") as string) || "";
+    const regionValue = regionInput.trim() ? regionInput.trim() : null;
+    
+    const millesimeInput = (formData.get("millesime") as string) || "";
+    let millesimeValue: number | null = null;
+    if (millesimeInput.trim()) {
+      const parsed = parseInt(millesimeInput.trim(), 10);
+      millesimeValue = isNaN(parsed) ? null : parsed;
+    }
+    
     const bottle: Omit<Bottle, "id"> = {
       name: formData.get("name") as string,
       vintage: formData.get("vintage")
@@ -87,6 +104,9 @@ export default function BottleModal({
         ? parseFloat(formData.get("price") as string)
         : undefined,
       garde: normalizedGarde,
+      domaine: domaineValue,
+      millesime: millesimeValue,
+      region: regionValue,
     };
 
     if (!bottle.name.trim()) return;
@@ -188,6 +208,60 @@ export default function BottleModal({
             <p className="mt-1 text-xs text-[#8b7355]">
               Formats acceptés: 2027, 2027/2029, 2027-2029
             </p>
+          </div>
+
+          <div>
+            <label
+              htmlFor="domaine"
+              className="block text-sm font-medium mb-1 text-[#2a2a2a]"
+            >
+              Domaine
+            </label>
+            <input
+              type="text"
+              id="domaine"
+              name="domaine"
+              placeholder="ex: Château Margaux"
+              defaultValue={initialBottle?.domaine || ""}
+              className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] placeholder:text-[#8b7355]"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="millesime"
+              className="block text-sm font-medium mb-1 text-[#2a2a2a]"
+            >
+              Millésime
+            </label>
+            <input
+              type="number"
+              id="millesime"
+              name="millesime"
+              step="1"
+              min="1900"
+              max={new Date().getFullYear() + 1}
+              placeholder="ex: 2015"
+              defaultValue={initialBottle?.millesime || ""}
+              className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] placeholder:text-[#8b7355]"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="region"
+              className="block text-sm font-medium mb-1 text-[#2a2a2a]"
+            >
+              Région
+            </label>
+            <input
+              type="text"
+              id="region"
+              name="region"
+              placeholder="ex: Bordeaux, Bourgogne"
+              defaultValue={initialBottle?.region || ""}
+              className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] placeholder:text-[#8b7355]"
+            />
           </div>
 
           <div className="flex gap-3 justify-end pt-4">

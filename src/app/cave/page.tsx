@@ -178,6 +178,9 @@ export default function CavePage() {
               vintage: bottle.annee || undefined, // Mapping annee (Supabase) -> vintage (React)
               price: bottle.prix || undefined, // Mapping prix (Supabase) -> price (React)
               garde: bottle.garde || undefined,
+              domaine: bottle.domaine || null,
+              millesime: bottle.millesime || null,
+              region: bottle.region || null,
             };
 
             if (bottle.clayette === BAS_DE_CAVE_ID) {
@@ -401,6 +404,9 @@ export default function CavePage() {
           annee: bottleData.vintage || null, // Mapping vintage (React) -> annee (Supabase)
           prix: bottleData.price || null, // Mapping price (React) -> prix (Supabase)
           garde: bottleData.garde || null,
+          domaine: bottleData.domaine || null,
+          millesime: bottleData.millesime || null,
+          region: bottleData.region || null,
         };
         
         console.log("UPDATE payload:", payload);
@@ -441,6 +447,9 @@ export default function CavePage() {
           annee: bottleData.vintage || null, // Mapping vintage (React) -> annee (Supabase)
           prix: bottleData.price || null, // Mapping price (React) -> prix (Supabase)
           garde: bottleData.garde || null,
+          domaine: bottleData.domaine || null,
+          millesime: bottleData.millesime || null,
+          region: bottleData.region || null,
         };
 
         console.log("INSERT payload:", payload);
@@ -633,6 +642,18 @@ export default function CavePage() {
     if (bottle.garde) {
       parts.push(bottle.garde);
     }
+    
+    // Affichage discret des nouveaux champs si présents
+    const extraInfo: string[] = [];
+    if (bottle.domaine) {
+      extraInfo.push(bottle.domaine);
+    }
+    if (bottle.millesime) {
+      extraInfo.push(String(bottle.millesime));
+    }
+    if (bottle.region) {
+      extraInfo.push(bottle.region);
+    }
 
     const status = getGardeStatus(bottle.garde);
     const statusInfo = getStatusInfo(status);
@@ -682,6 +703,11 @@ export default function CavePage() {
                 </span>
               );
             })}
+          </span>
+        )}
+        {extraInfo.length > 0 && (
+          <span className="text-[9px] text-[#8b7355]/70 mt-0.5 truncate w-full text-center whitespace-nowrap overflow-hidden text-ellipsis">
+            {extraInfo.join(" • ")}
           </span>
         )}
       </button>
