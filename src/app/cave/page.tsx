@@ -550,58 +550,6 @@ export default function CavePage() {
     setIsEditModalOpen(true);
   };
 
-  const parseGarde = (garde?: string): { start?: number; end?: number } => {
-    if (!garde) return {};
-    
-    // Extraire toutes les années (4 chiffres consécutifs)
-    const yearPattern = /\b(\d{4})\b/g;
-    const years: number[] = [];
-    let match;
-    
-    while ((match = yearPattern.exec(garde)) !== null) {
-      const year = parseInt(match[1], 10);
-      if (year >= 1900 && year <= 2100) {
-        years.push(year);
-      }
-    }
-    
-    if (years.length === 0) return {};
-    if (years.length === 1) {
-      return { start: years[0], end: years[0] };
-    }
-    
-    const sortedYears = [...years].sort((a, b) => a - b);
-    return { start: sortedYears[0], end: sortedYears[sortedYears.length - 1] };
-  };
-
-  const getGardeStatus = (garde?: string): "drink" | "soon" | "wait" | "unknown" => {
-    const parsed = parseGarde(garde);
-    if (!parsed.start || !parsed.end) return "unknown";
-    
-    const currentYear = new Date().getFullYear();
-    
-    if (currentYear < parsed.start) {
-      return "wait";
-    } else if (currentYear === parsed.start - 1) {
-      return "soon";
-    } else {
-      return "drink";
-    }
-  };
-
-  const getStatusInfo = (status: "drink" | "soon" | "wait" | "unknown") => {
-    switch (status) {
-      case "drink":
-        return { bg: "bg-emerald-900/70", title: "À boire", border: "border-[#d4af37]/50" };
-      case "soon":
-        return { bg: "bg-amber-700/70", title: "Bientôt", border: "border-[#d4af37]/50" };
-      case "wait":
-        return { bg: "bg-red-900/70", title: "À attendre", border: "border-[#d4af37]/50" };
-      default:
-        return null;
-    }
-  };
-
   const getDisplayLabel = (rowId: string, slotIndex: number): string => {
     const rowIndex = SHELF_LAYOUT.findIndex((r) => r.rowId === rowId);
     if (rowIndex === -1) return "";
@@ -673,9 +621,6 @@ export default function CavePage() {
       extraInfo.push(bottle.region);
     }
 
-    const status = getGardeStatus(bottle.garde);
-    const statusInfo = getStatusInfo(status);
-
     // Styles selon la couleur - différenciation visuelle uniquement par le fond (aucun texte)
     const getCouleurStyles = () => {
       if (!bottle.couleur) {
@@ -742,12 +687,6 @@ export default function CavePage() {
         <span className="absolute top-1 left-1 text-[10px] text-[#8b7355] opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity z-10">
           {displayLabel}
         </span>
-        {statusInfo && (
-          <div
-            className={`absolute top-1 right-1 w-2.5 h-2.5 rounded-full border ${statusInfo.bg} ${statusInfo.border} z-10`}
-            title={statusInfo.title}
-          />
-        )}
         <span className="font-semibold text-[#2a2a2a] text-xs text-center w-full truncate whitespace-nowrap overflow-hidden text-ellipsis">
           {bottle.name}
         </span>
@@ -823,17 +762,50 @@ export default function CavePage() {
           )}
         </div>
         <div className="h-px bg-gradient-to-r from-[#d4af37] via-[#d4af37]/50 to-transparent mb-4"></div>
-        <div className="grid grid-cols-6 gap-2 w-full">
-          {clayettes.map((clayette, index) => (
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full">
+          <h2 
+            className="text-xl font-semibold whitespace-nowrap"
+            style={{
+              fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif',
+              fontWeight: 600,
+              letterSpacing: '0.05em',
+              color: '#b8860b',
+              textShadow: '0 1px 2px rgba(0,0,0,0.08)',
+            }}
+          >
+            Clayette
+          </h2>
+          <div className="flex items-center gap-2 flex-wrap">
+            {clayettes.map((clayette, index) => (
+              <button
+                key={clayette.id}
+                onClick={() => {
+                  setSelectedClayetteId(clayette.id);
+                  setMovingFromKey(null);
+                }}
+                title={clayette.name}
+                className={`px-4 py-2.5 text-sm sm:text-base font-semibold rounded-full border transition-all focus:outline-none focus:ring-2 focus:ring-[#d4af37] min-w-[44px] ${
+                  selectedClayetteId === clayette.id
+                    ? "border-[#d4af37] text-[#fbf7f0] bg-[#8B2635] shadow-[0_2px_4px_rgba(139,38,53,0.3)]"
+                    : "border-[#d4af37]/40 text-[#2a2a2a] bg-[#fefcf5] hover:border-[#d4af37]/60 hover:bg-[#faf8f0]"
+                }`}
+                style={{
+                  letterSpacing: '0.02em',
+                }}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center ml-auto sm:ml-4">
             <button
-              key={clayette.id}
               onClick={() => {
-                setSelectedClayetteId(clayette.id);
+                setSelectedClayetteId(BAS_DE_CAVE_ID);
                 setMovingFromKey(null);
               }}
-              title={clayette.name}
-              className={`px-3 py-2.5 text-sm sm:text-base font-semibold rounded-full border transition-all truncate focus:outline-none focus:ring-2 focus:ring-[#d4af37] ${
-                selectedClayetteId === clayette.id
+              title="Bas de cave"
+              className={`px-4 py-2.5 text-sm sm:text-base font-semibold rounded-full border transition-all focus:outline-none focus:ring-2 focus:ring-[#d4af37] ${
+                selectedClayetteId === BAS_DE_CAVE_ID
                   ? "border-[#d4af37] text-[#fbf7f0] bg-[#8B2635] shadow-[0_2px_4px_rgba(139,38,53,0.3)]"
                   : "border-[#d4af37]/40 text-[#2a2a2a] bg-[#fefcf5] hover:border-[#d4af37]/60 hover:bg-[#faf8f0]"
               }`}
@@ -841,26 +813,9 @@ export default function CavePage() {
                 letterSpacing: '0.02em',
               }}
             >
-              Clayette {index + 1}
+              Bas de cave
             </button>
-          ))}
-          <button
-            onClick={() => {
-              setSelectedClayetteId(BAS_DE_CAVE_ID);
-              setMovingFromKey(null);
-            }}
-            title="Bas de cave"
-            className={`px-3 py-2.5 text-sm sm:text-base font-semibold rounded-full border transition-all truncate focus:outline-none focus:ring-2 focus:ring-[#d4af37] ${
-              selectedClayetteId === BAS_DE_CAVE_ID
-                ? "border-[#d4af37] text-[#fbf7f0] bg-[#8B2635] shadow-[0_2px_4px_rgba(139,38,53,0.3)]"
-                : "border-[#d4af37]/40 text-[#2a2a2a] bg-[#fefcf5] hover:border-[#d4af37]/60 hover:bg-[#faf8f0]"
-            }`}
-            style={{
-              letterSpacing: '0.02em',
-            }}
-          >
-            Bas de cave
-          </button>
+          </div>
         </div>
       </div>
 
