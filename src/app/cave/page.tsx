@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import BottleModal, { Bottle } from "@/components/cave/BottleModal";
+import BottleDetailsModal from "@/components/cave/BottleDetailsModal";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -119,8 +120,10 @@ export default function CavePage() {
   );
   const [cells, setCells] = useState<Record<CellKey, Bottle>>({});
   const [basDeCaveCells, setBasDeCaveCells] = useState<Record<CellKey, Bottle>>({});
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCellKey, setSelectedCellKey] = useState<CellKey | null>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [movingFromKey, setMovingFromKey] = useState<CellKey | null>(null);
   const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null);
 
@@ -377,9 +380,16 @@ export default function CavePage() {
       return;
     }
 
-    // Comportement normal : ouvrir la modal
+    // Comportement normal : ouvrir la modale appropriée
     setSelectedCellKey(cellKey);
-    setIsModalOpen(true);
+    
+    if (currentCells[cellKey]) {
+      // Case occupée : ouvrir la modale détails
+      setIsDetailsModalOpen(true);
+    } else {
+      // Case vide : ouvrir directement le formulaire d'ajout
+      setIsEditModalOpen(true);
+    }
   };
 
   const handleSave = async (bottleData: Omit<Bottle, "id">) => {
@@ -434,6 +444,9 @@ export default function CavePage() {
           ...prev,
           [selectedCellKey]: { ...bottleData, id: existingBottle.id },
         }));
+
+        // Fermer la modale après sauvegarde réussie
+        setIsEditModalOpen(false);
       } else {
         // Création d'une nouvelle bouteille
         const position = convertSlotIdToPosition(keyParts.slotId);
@@ -477,6 +490,9 @@ export default function CavePage() {
             [selectedCellKey]: { ...bottleData, id: data.id },
           }));
         }
+
+        // Fermer la modale après sauvegarde réussie
+        setIsEditModalOpen(false);
       }
     } catch (err) {
       // Erreur JS inattendue (pas une erreur Supabase)
@@ -495,11 +511,15 @@ export default function CavePage() {
       return;
     }
 
+    setIsDeleteLoading(true);
     const currentCells = isBasDeCaveView ? basDeCaveCells : cells;
     const setCurrentCells = isBasDeCaveView ? setBasDeCaveCells : setCells;
     const bottle = currentCells[selectedCellKey];
 
-    if (!bottle) return;
+    if (!bottle) {
+      setIsDeleteLoading(false);
+      return;
+    }
 
     try {
       const { error } = await supabase
@@ -509,20 +529,38 @@ export default function CavePage() {
 
       if (error) throw error;
 
-      // Mettre à jour le state local
+      // Mettre à jour le state local (optimistic UI)
       setCurrentCells((prev) => {
         const updated = { ...prev };
         delete updated[selectedCellKey];
         return updated;
       });
+
+      // Fermer la modale détails
+      setIsDetailsModalOpen(false);
+      setSelectedCellKey(null);
     } catch (error) {
       console.error("Erreur lors de la suppression dans Supabase:", error);
+      alert("Erreur lors de la suppression de la bouteille");
+    } finally {
+      setIsDeleteLoading(false);
     }
   };
 
-  const handleModalClose = () => {
-    setIsModalOpen(false);
+  const handleDetailsModalClose = () => {
+    setIsDetailsModalOpen(false);
     setSelectedCellKey(null);
+  };
+
+  const handleEditModalClose = () => {
+    setIsEditModalOpen(false);
+    setSelectedCellKey(null);
+  };
+
+  const handleEditClick = () => {
+    // Fermer la modale détails et ouvrir le formulaire d'édition
+    setIsDetailsModalOpen(false);
+    setIsEditModalOpen(true);
   };
 
   const parseGarde = (garde?: string): { start?: number; end?: number } => {
@@ -835,12 +873,27 @@ export default function CavePage() {
           </div>
       </div>
 
+      {/* Modale Détails */}
+      <BottleDetailsModal
+        isOpen={isDetailsModalOpen}
+        onClose={handleDetailsModalClose}
+        onEdit={handleEditClick}
+        onDelete={handleDelete}
+        bottle={
+          selectedCellKey
+            ? (isBasDeCaveView ? basDeCaveCells[selectedCellKey] : cells[selectedCellKey]) || null
+            : null
+        }
+        isDeleteLoading={isDeleteLoading}
+      />
+
+      {/* Modale Formulaire (édition ou création) */}
       <BottleModal
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
+        isOpen={isEditModalOpen}
+        onClose={handleEditModalClose}
         onSave={handleSave}
         onDelete={
-          selectedCellKey
+          selectedCellKey && (isBasDeCaveView ? basDeCaveCells[selectedCellKey] : cells[selectedCellKey])
             ? handleDelete
             : undefined
         }
