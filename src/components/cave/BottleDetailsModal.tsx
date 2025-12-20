@@ -91,6 +91,22 @@ export default function BottleDetailsModal({
             </div>
           )}
 
+          {/* Couleur */}
+          {bottle.couleur && (
+            <div>
+              <label className="block text-xs font-medium text-[#8b7355] uppercase tracking-wide mb-2">
+                Couleur
+              </label>
+              <span className={`inline-block px-3 py-1.5 rounded-md text-sm font-medium ${
+                bottle.couleur === 'rouge' ? 'bg-[#8B2635]/20 text-[#8B2635] border border-[#8B2635]/40' :
+                bottle.couleur === 'blanc' ? 'bg-[#d4af37]/20 text-[#b8941f] border border-[#d4af37]/40' :
+                'bg-[#f4a5b3]/20 text-[#d4728a] border border-[#f4a5b3]/40'
+              }`}>
+                {bottle.couleur === 'rose' ? 'Rosé' : bottle.couleur.charAt(0).toUpperCase() + bottle.couleur.slice(1)}
+              </span>
+            </div>
+          )}
+
           {/* Prix */}
           {bottle.price !== undefined && bottle.price !== null && (
             <div>

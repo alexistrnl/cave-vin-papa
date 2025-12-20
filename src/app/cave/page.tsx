@@ -173,6 +173,7 @@ export default function CavePage() {
             domaine: bottle.domaine || null,
             millesime: bottle.millesime || null,
             region: bottle.region || null,
+            couleur: bottle.couleur || null,
           };
 
           if (bottle.clayette === BAS_DE_CAVE_ID) {
@@ -411,6 +412,7 @@ export default function CavePage() {
           domaine: bottleData.domaine || null,
           millesime: bottleData.millesime || null,
           region: bottleData.region || null,
+          couleur: bottleData.couleur || null,
         };
         
         console.log("UPDATE payload:", payload);
@@ -453,6 +455,7 @@ export default function CavePage() {
           domaine: bottleData.domaine || null,
           millesime: bottleData.millesime || null,
           region: bottleData.region || null,
+          couleur: bottleData.couleur || null,
         };
 
         console.log("INSERT payload:", payload);
@@ -674,6 +677,50 @@ export default function CavePage() {
     const status = getGardeStatus(bottle.garde);
     const statusInfo = getStatusInfo(status);
 
+    // Styles selon la couleur
+    const getCouleurStyles = () => {
+      if (!bottle.couleur) {
+        return {
+          bg: "bg-[#fbf7f0]",
+          border: "border-[#d4af37]/30",
+          hoverBg: "hover:bg-[#f5efe0]",
+          hoverBorder: "hover:border-[#d4af37]/70",
+        };
+      }
+      switch (bottle.couleur) {
+        case 'rouge':
+          return {
+            bg: "bg-[#8B2635]/10",
+            border: "border-[#8B2635]/50",
+            hoverBg: "hover:bg-[#8B2635]/15",
+            hoverBorder: "hover:border-[#8B2635]/70",
+          };
+        case 'blanc':
+          return {
+            bg: "bg-[#faf8f0]",
+            border: "border-[#d4af37]/60",
+            hoverBg: "hover:bg-[#f9f7ed]",
+            hoverBorder: "hover:border-[#d4af37]/80",
+          };
+        case 'rose':
+          return {
+            bg: "bg-[#fdf2f5]",
+            border: "border-[#f4a5b3]/50",
+            hoverBg: "hover:bg-[#fceef3]",
+            hoverBorder: "hover:border-[#f4a5b3]/70",
+          };
+        default:
+          return {
+            bg: "bg-[#fbf7f0]",
+            border: "border-[#d4af37]/30",
+            hoverBg: "hover:bg-[#f5efe0]",
+            hoverBorder: "hover:border-[#d4af37]/70",
+          };
+      }
+    };
+
+    const couleurStyles = getCouleurStyles();
+
     return (
       <button
         key={cellKey}
@@ -682,23 +729,34 @@ export default function CavePage() {
         onTouchStart={() => handleLongPressStart(slotId)}
         onTouchEnd={handleLongPressEnd}
         onTouchMove={handleLongPressEnd}
-        className={`${CELL_HEIGHT} border rounded-md flex flex-col items-center justify-center bg-[#fbf7f0] hover:bg-[#f5efe0] focus:outline-none focus:ring-2 focus:ring-[#d4af37] transition-colors px-2 py-1 relative flex-1 basis-0 min-w-0 group cursor-pointer overflow-hidden ${
+        className={`${CELL_HEIGHT} border rounded-md flex flex-col items-center justify-center ${couleurStyles.bg} ${couleurStyles.hoverBg} focus:outline-none focus:ring-2 focus:ring-[#d4af37] transition-colors px-2 py-1 relative flex-1 basis-0 min-w-0 group cursor-pointer overflow-hidden ${
           isMovingSource
             ? "border-[#8B2635] border-2 shadow-[0_0_8px_rgba(139,38,53,0.3)]"
             : isMovingMode
-            ? "border-[#d4af37]/30 hover:border-[#d4af37] hover:ring-2 hover:ring-[#d4af37]/30"
-            : "border-[#d4af37]/30 hover:border-[#d4af37]/70"
+            ? `${couleurStyles.border} hover:border-[#d4af37] hover:ring-2 hover:ring-[#d4af37]/30`
+            : `${couleurStyles.border} ${couleurStyles.hoverBorder}`
         }`}
       >
         <span className="absolute top-1 left-1 text-[10px] text-[#8b7355] opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity z-10">
           {displayLabel}
         </span>
-        {statusInfo && (
-          <div
-            className={`absolute top-1 right-1 w-2.5 h-2.5 rounded-full border ${statusInfo.bg} ${statusInfo.border} z-10`}
-            title={statusInfo.title}
-          />
-        )}
+        <div className="absolute top-1 right-1 flex items-center gap-1 z-10">
+          {bottle.couleur && (
+            <span className={`text-[9px] px-1.5 py-0.5 rounded font-medium ${
+              bottle.couleur === 'rouge' ? 'bg-[#8B2635]/20 text-[#8B2635] border border-[#8B2635]/30' :
+              bottle.couleur === 'blanc' ? 'bg-[#d4af37]/20 text-[#b8941f] border border-[#d4af37]/40' :
+              'bg-[#f4a5b3]/20 text-[#d4728a] border border-[#f4a5b3]/40'
+            }`}>
+              {bottle.couleur === 'rose' ? 'Rosé' : bottle.couleur.charAt(0).toUpperCase() + bottle.couleur.slice(1)}
+            </span>
+          )}
+          {statusInfo && (
+            <div
+              className={`w-2.5 h-2.5 rounded-full border ${statusInfo.bg} ${statusInfo.border}`}
+              title={statusInfo.title}
+            />
+          )}
+        </div>
         <span className="font-semibold text-[#2a2a2a] text-xs text-center w-full truncate whitespace-nowrap overflow-hidden text-ellipsis">
           {bottle.name}
         </span>

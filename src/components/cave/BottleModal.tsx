@@ -10,6 +10,7 @@ export interface Bottle {
   domaine?: string | null;
   millesime?: number | null;
   region?: string | null;
+  couleur?: 'rouge' | 'blanc' | 'rose' | null;
 }
 
 interface BottleModalProps {
@@ -94,6 +95,9 @@ export default function BottleModal({
       millesimeValue = isNaN(parsed) ? null : parsed;
     }
     
+    const couleurInput = (formData.get("couleur") as string) || "";
+    const couleurValue = couleurInput && ['rouge', 'blanc', 'rose'].includes(couleurInput) ? couleurInput as 'rouge' | 'blanc' | 'rose' : null;
+    
     const bottle: Omit<Bottle, "id"> = {
       name: formData.get("name") as string,
       price: formData.get("price")
@@ -103,6 +107,7 @@ export default function BottleModal({
       domaine: domaineValue,
       millesime: millesimeValue,
       region: regionValue,
+      couleur: couleurValue,
     };
 
     if (!bottle.name.trim()) return;
@@ -220,6 +225,26 @@ export default function BottleModal({
               defaultValue={initialBottle?.price || ""}
               className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] placeholder:text-[#8b7355]"
             />
+          </div>
+
+          <div>
+            <label
+              htmlFor="couleur"
+              className="block text-sm font-medium mb-1 text-[#2a2a2a]"
+            >
+              Couleur
+            </label>
+            <select
+              id="couleur"
+              name="couleur"
+              defaultValue={initialBottle?.couleur || ""}
+              className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37]"
+            >
+              <option value="">--</option>
+              <option value="rouge">Rouge</option>
+              <option value="blanc">Blanc</option>
+              <option value="rose">Rosé</option>
+            </select>
           </div>
 
           <div>
