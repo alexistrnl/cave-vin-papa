@@ -32,7 +32,6 @@ const pwaConfig = withPWA({
       handler: "NetworkOnly",
       options: {
         cacheName: "supabase-api",
-        networkTimeoutSeconds: 10,
       },
     },
     {
@@ -40,7 +39,6 @@ const pwaConfig = withPWA({
       handler: "NetworkOnly",
       options: {
         cacheName: "supabase-auth",
-        networkTimeoutSeconds: 10,
       },
     },
     {
