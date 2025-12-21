@@ -1023,10 +1023,10 @@ export default function CavePage() {
                   onClick={() => setOpenRegion(isOpen ? null : region.nom)}
                   className="w-full px-6 py-5 flex items-center gap-4 text-left focus:outline-none focus:ring-2 focus:ring-[#d4af37]/30 focus:ring-inset transition-all duration-300"
                 >
-                  {/* Badge départemental */}
-                  <div className="flex-shrink-0 px-3 py-1.5 rounded-lg bg-[#fefcf5] border border-[#d4af37]/30 flex items-center justify-center group-hover:border-[#d4af37]/50 transition-all duration-300 shadow-sm min-w-[60px]">
-                    <span className="text-xs font-medium text-[#b8860b] tracking-wide whitespace-nowrap">
-                      {REGION_DEPARTEMENTS[region.nom] || ""}
+                  {/* Badge avec première lettre */}
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#fefcf5] border border-[#d4af37]/30 flex items-center justify-center group-hover:border-[#d4af37]/50 transition-all duration-300 shadow-sm">
+                    <span className="text-base font-semibold text-[#b8860b] tracking-wide">
+                      {region.nom.charAt(0)}
                     </span>
                   </div>
 
