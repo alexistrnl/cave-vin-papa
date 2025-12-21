@@ -83,6 +83,12 @@ body::before {
   touch-action: pan-y;
   min-height: 0;
   flex: 1;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#app-main::-webkit-scrollbar {
+  display: none;
 }
 
 /* Fix iOS PWA: garantir que les inputs/formulaires dans les modales peuvent recevoir le focus */

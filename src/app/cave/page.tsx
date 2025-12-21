@@ -799,7 +799,23 @@ export default function CavePage() {
 
   return (
     <main className="flex flex-col w-full">
-      <div className="w-full mb-6">
+      {/* Section Cave */}
+      <div className="rounded-xl border-2 border-[#d4af37]/50 bg-[#fbf7f0] p-5 sm:p-7 mb-8">
+        <div className="mb-6">
+          <h2 
+            className="text-lg font-semibold mb-1"
+            style={{
+              fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif',
+              fontWeight: 600,
+              letterSpacing: '0.05em',
+              color: '#b8860b',
+              textShadow: '0 1px 2px rgba(0,0,0,0.08)',
+            }}
+          >
+            Votre cave
+          </h2>
+        </div>
+        <div className="w-full mb-6">
         <div className="mb-5">
           <div className="flex items-center justify-between mb-2">
             <div>
@@ -946,22 +962,33 @@ export default function CavePage() {
               ))}
             </div>
           </div>
+        </div>
       </div>
 
-      {/* Guide des régions viticoles */}
-      <div className="mt-8 w-full">
-        <h2 
-          className="text-xl font-semibold mb-4"
-          style={{
-            fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif',
-            fontWeight: 600,
-            letterSpacing: '0.05em',
-            color: '#b8860b',
-            textShadow: '0 1px 2px rgba(0,0,0,0.08)',
-          }}
-        >
-          Guide des régions viticoles françaises
-        </h2>
+      {/* Divider élégant */}
+      <div className="flex items-center justify-center my-8 sm:my-10">
+        <div className="h-px w-full max-w-md bg-gradient-to-r from-transparent via-[#d4af37]/60 to-transparent"></div>
+      </div>
+
+      {/* Section Guide des régions viticoles */}
+      <div className="rounded-xl border-2 border-[#d4af37]/50 bg-[#fefcf5] p-5 sm:p-7 shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
+        <div className="mb-6">
+          <h2 
+            className="text-lg font-semibold mb-1"
+            style={{
+              fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif',
+              fontWeight: 600,
+              letterSpacing: '0.05em',
+              color: '#b8860b',
+              textShadow: '0 1px 2px rgba(0,0,0,0.08)',
+            }}
+          >
+            Guide des régions
+          </h2>
+          <p className="text-xs text-[#8b7355] mt-1">
+            Régions, sous-régions et appellations
+          </p>
+        </div>
         <div className="space-y-2">
           {REGIONS_VITICOLES.map((region) => {
             const isOpen = openRegion === region.nom;
