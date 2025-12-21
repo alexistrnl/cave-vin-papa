@@ -815,8 +815,8 @@ export default function CavePage() {
 
   return (
     <main className="flex flex-col w-full">
-      {/* Section Cave */}
-      <div className="rounded-xl border-2 border-[#d4af37]/50 bg-[#fbf7f0] p-5 sm:p-7 mb-8">
+      {/* Section Cave - Card séparée */}
+      <div className="rounded-xl border-2 border-[#d4af37]/50 bg-[#fbf7f0] p-5 sm:p-7 shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
         <div className="mb-6">
           <h2 
             className="text-lg font-semibold mb-1"
@@ -982,8 +982,8 @@ export default function CavePage() {
       </div>
 
       {/* Section break - Séparation nette avec fond bordeaux visible */}
-      <div className="relative my-12 sm:my-16 md:my-18 flex items-center justify-center">
-        <div className="h-px w-full max-w-[240px] bg-gradient-to-r from-transparent via-[#d4af37]/60 to-transparent" style={{ boxShadow: '0 0 2px rgba(212, 175, 55, 0.2)' }}></div>
+      <div className="relative my-12 sm:my-16 md:my-20 lg:my-24 flex items-center justify-center" style={{ backgroundColor: 'transparent' }}>
+        <div className="h-px w-full max-w-[120px] bg-gradient-to-r from-transparent via-[#d4af37]/60 to-transparent" style={{ boxShadow: '0 0 2px rgba(212, 175, 55, 0.2)' }}></div>
       </div>
 
       {/* Section Guide des régions viticoles - Premium */}

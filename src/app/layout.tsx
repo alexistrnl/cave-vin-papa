@@ -85,8 +85,7 @@ export default function RootLayout({
               </div>
             </header>
             <main id="app-main" className="mx-auto w-full max-w-5xl px-4 pt-0 pb-12">
-              <div className="bg-[#fbf7f0] border-2 border-[#d4af37] rounded-2xl shadow-2xl p-6 md:p-8 lg:p-10 relative">
-                <div className="absolute inset-2 border border-[#d4af37]/40 rounded-xl pointer-events-none"></div>
+              <div className="p-6 md:p-8 lg:p-10 relative">
                 <div className="relative z-10">
                   {children}
                 </div>
