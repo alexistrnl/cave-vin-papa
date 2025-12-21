@@ -115,6 +115,107 @@ const clayettes: Clayette[] = [
 
 const BAS_DE_CAVE_ID = "bas-de-cave";
 
+// Fonction pour obtenir le SVG du contour de chaque région
+const getRegionOutline = (regionName: string): React.ReactNode => {
+  const svgProps: React.SVGProps<SVGSVGElement> = {
+    className: "w-full h-full",
+    fill: "none",
+    stroke: "#b8860b",
+    strokeWidth: 1.5,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    style: { filter: 'drop-shadow(0 0 1px rgba(184, 134, 11, 0.3))' }
+  };
+
+  switch (regionName) {
+    case "Bordeaux":
+      return (
+        <svg viewBox="0 0 24 24" {...svgProps}>
+          <path d="M6 8 L8 6 L12 7 L16 6 L18 8 L18 12 L16 14 L12 15 L8 14 L6 12 Z" />
+        </svg>
+      );
+    case "Bourgogne":
+      return (
+        <svg viewBox="0 0 24 24" {...svgProps}>
+          <path d="M8 4 L10 5 L12 4 L14 5 L16 4 L16 8 L14 10 L12 9 L10 10 L8 8 Z" />
+          <path d="M8 10 L10 11 L12 10 L14 11 L16 10 L16 14 L14 16 L12 15 L10 16 L8 14 Z" />
+        </svg>
+      );
+    case "Champagne":
+      return (
+        <svg viewBox="0 0 24 24" {...svgProps}>
+          <path d="M10 6 L12 5 L14 6 L14 10 L12 11 L10 10 Z" />
+          <path d="M8 10 L10 11 L12 10 L14 11 L16 10 L16 14 L14 15 L12 14 L10 15 L8 14 Z" />
+        </svg>
+      );
+    case "Rhône":
+      return (
+        <svg viewBox="0 0 24 24" {...svgProps}>
+          <path d="M6 4 L8 6 L10 5 L12 7 L14 5 L16 6 L18 4 L18 12 L16 14 L14 13 L12 15 L10 13 L8 14 L6 12 Z" />
+        </svg>
+      );
+    case "Loire":
+      return (
+        <svg viewBox="0 0 24 24" {...svgProps}>
+          <path d="M4 8 L6 7 L8 8 L10 7 L12 8 L14 7 L16 8 L18 7 L20 8 L20 12 L18 13 L16 12 L14 13 L12 12 L10 13 L8 12 L6 13 L4 12 Z" />
+        </svg>
+      );
+    case "Alsace":
+      return (
+        <svg viewBox="0 0 24 24" {...svgProps}>
+          <path d="M6 6 L8 5 L10 6 L12 5 L14 6 L16 5 L18 6 L18 12 L16 13 L14 12 L12 13 L10 12 L8 13 L6 12 Z" />
+        </svg>
+      );
+    case "Provence":
+      return (
+        <svg viewBox="0 0 24 24" {...svgProps}>
+          <path d="M8 8 L10 7 L12 8 L14 7 L16 8 L16 12 L14 13 L12 12 L10 13 L8 12 Z" />
+          <path d="M6 10 L8 9 L8 11 Z" />
+        </svg>
+      );
+    case "Languedoc-Roussillon":
+      return (
+        <svg viewBox="0 0 24 24" {...svgProps}>
+          <path d="M6 6 L8 5 L10 6 L12 5 L14 6 L16 5 L18 6 L18 10 L16 11 L14 10 L12 11 L10 10 L8 11 L6 10 Z" />
+          <path d="M6 12 L8 11 L10 12 L12 11 L14 12 L16 11 L18 12 L18 16 L16 17 L14 16 L12 17 L10 16 L8 17 L6 16 Z" />
+        </svg>
+      );
+    case "Sud-Ouest":
+      return (
+        <svg viewBox="0 0 24 24" {...svgProps}>
+          <path d="M6 8 L8 7 L10 8 L12 7 L14 8 L16 7 L18 8 L18 12 L16 13 L14 12 L12 13 L10 12 L8 13 L6 12 Z" />
+          <path d="M4 10 L6 9 L6 11 Z" />
+        </svg>
+      );
+    case "Beaujolais":
+      return (
+        <svg viewBox="0 0 24 24" {...svgProps}>
+          <path d="M8 6 L10 5 L12 6 L14 5 L16 6 L16 10 L14 11 L12 10 L10 11 L8 10 Z" />
+        </svg>
+      );
+    case "Savoie":
+      return (
+        <svg viewBox="0 0 24 24" {...svgProps}>
+          <path d="M10 4 L12 5 L14 4 L14 8 L12 9 L10 8 Z" />
+          <path d="M8 10 L10 9 L12 10 L14 9 L16 10 L16 14 L14 15 L12 14 L10 15 L8 14 Z" />
+        </svg>
+      );
+    case "Jura":
+      return (
+        <svg viewBox="0 0 24 24" {...svgProps}>
+          <path d="M10 6 L12 5 L14 6 L14 10 L12 11 L10 10 Z" />
+          <path d="M8 12 L10 11 L12 12 L14 11 L16 12 L16 16 L14 17 L12 16 L10 17 L8 16 Z" />
+        </svg>
+      );
+    default:
+      return (
+        <svg viewBox="0 0 24 24" {...svgProps}>
+          <path d="M6 6 L18 6 L18 18 L6 18 Z" />
+        </svg>
+      );
+  }
+};
+
 const REGIONS_VITICOLES: RegionViticole[] = [
   {
     nom: "Bordeaux",
@@ -965,9 +1066,11 @@ export default function CavePage() {
         </div>
       </div>
 
-      {/* Divider élégant */}
-      <div className="flex items-center justify-center my-8 sm:my-10">
-        <div className="h-px w-full max-w-md bg-gradient-to-r from-transparent via-[#d4af37]/60 to-transparent"></div>
+      {/* Section break - Séparation nette avec fond bordeaux visible */}
+      <div className="relative my-12 sm:my-16">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="h-px w-full max-w-xs bg-gradient-to-r from-transparent via-[#d4af37]/50 to-transparent"></div>
+        </div>
       </div>
 
       {/* Section Guide des régions viticoles - Premium */}
@@ -1007,21 +1110,11 @@ export default function CavePage() {
                   onClick={() => setOpenRegion(isOpen ? null : region.nom)}
                   className="w-full px-6 py-5 flex items-center gap-4 text-left focus:outline-none focus:ring-2 focus:ring-[#d4af37]/30 focus:ring-inset transition-all duration-300"
                 >
-                  {/* Icône grappe stylisée */}
-                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#d4af37]/10 border border-[#d4af37]/20 flex items-center justify-center group-hover:bg-[#d4af37]/15 transition-colors duration-300">
-                    <svg
-                      className="w-5 h-5 text-[#b8860b]"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                      />
-                    </svg>
+                  {/* Médaillon avec contour de région */}
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#fefcf5] border border-[#d4af37]/30 flex items-center justify-center group-hover:border-[#d4af37]/50 transition-all duration-300 shadow-sm">
+                    <div className="w-8 h-8">
+                      {getRegionOutline(region.nom)}
+                    </div>
                   </div>
 
                   {/* Contenu */}
