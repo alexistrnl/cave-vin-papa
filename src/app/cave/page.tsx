@@ -970,74 +970,120 @@ export default function CavePage() {
         <div className="h-px w-full max-w-md bg-gradient-to-r from-transparent via-[#d4af37]/60 to-transparent"></div>
       </div>
 
-      {/* Section Guide des régions viticoles */}
-      <div className="rounded-xl border-2 border-[#d4af37]/50 bg-[#fefcf5] p-5 sm:p-7 shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
-        <div className="mb-6">
+      {/* Section Guide des régions viticoles - Premium */}
+      <div className="rounded-2xl border border-[#d4af37]/40 bg-[#fefcf5] py-8 sm:py-12 px-5 sm:px-8 shadow-[0_4px_16px_rgba(0,0,0,0.08)] backdrop-blur-sm">
+        {/* Header élégant */}
+        <div className="mb-10 text-center">
           <h2 
-            className="text-lg font-semibold mb-1"
+            className="text-2xl sm:text-3xl font-semibold mb-2"
             style={{
               fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif',
               fontWeight: 600,
-              letterSpacing: '0.05em',
+              letterSpacing: '0.08em',
               color: '#b8860b',
-              textShadow: '0 1px 2px rgba(0,0,0,0.08)',
+              textShadow: '0 2px 4px rgba(0,0,0,0.1)',
             }}
           >
-            Guide des régions
+            Guide des régions viticoles
           </h2>
-          <p className="text-xs text-[#8b7355] mt-1">
-            Régions, sous-régions et appellations
+          <p className="text-sm text-[#8b7355]/80 font-light tracking-wide">
+            Régions, sous-régions et appellations françaises
           </p>
         </div>
-        <div className="space-y-2">
+
+        {/* Cartes de régions premium */}
+        <div className="space-y-3">
           {REGIONS_VITICOLES.map((region) => {
             const isOpen = openRegion === region.nom;
             return (
               <div
                 key={region.nom}
-                className="border border-[#d4af37]/30 rounded-lg bg-[#fefcf5] overflow-hidden transition-all"
+                className="group relative rounded-xl border border-[#d4af37]/30 bg-gradient-to-br from-[#fefcf5] to-[#faf8f0] overflow-hidden transition-all duration-500 ease-in-out hover:border-[#d4af37]/50 hover:shadow-[0_8px_24px_rgba(212,175,55,0.15)]"
+                style={{
+                  transform: isOpen ? 'translateY(0)' : 'translateY(0)',
+                }}
               >
                 <button
                   onClick={() => setOpenRegion(isOpen ? null : region.nom)}
-                  className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-[#faf8f0] transition-colors focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:ring-inset"
+                  className="w-full px-6 py-5 flex items-center gap-4 text-left focus:outline-none focus:ring-2 focus:ring-[#d4af37]/30 focus:ring-inset transition-all duration-300"
                 >
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-[#2a2a2a] text-sm sm:text-base">
+                  {/* Icône grappe stylisée */}
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#d4af37]/10 border border-[#d4af37]/20 flex items-center justify-center group-hover:bg-[#d4af37]/15 transition-colors duration-300">
+                    <svg
+                      className="w-5 h-5 text-[#b8860b]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                      />
+                    </svg>
+                  </div>
+
+                  {/* Contenu */}
+                  <div className="flex-1 min-w-0">
+                    <h3 
+                      className="text-lg sm:text-xl font-semibold text-[#2a2a2a] mb-1"
+                      style={{
+                        fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif',
+                        letterSpacing: '0.03em',
+                      }}
+                    >
                       {region.nom}
                     </h3>
                     {isOpen && (
-                      <p className="text-xs text-[#8b7355] mt-1">
+                      <p className="text-sm text-[#8b7355]/90 mt-2 leading-relaxed font-light">
                         {region.description}
                       </p>
                     )}
                   </div>
-                  <svg
-                    className={`w-5 h-5 text-[#8b7355] transition-transform duration-200 flex-shrink-0 ml-3 ${
-                      isOpen ? "rotate-180" : ""
-                    }`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+
+                  {/* Icône de déploiement minimaliste */}
+                  <div className="flex-shrink-0">
+                    <svg
+                      className={`w-5 h-5 text-[#b8860b] transition-all duration-500 ease-in-out ${
+                        isOpen ? "rotate-180 opacity-60" : "opacity-40 group-hover:opacity-60"
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </div>
                 </button>
+
+                {/* Contenu déplié avec animation */}
                 {isOpen && (
-                  <div className="px-4 pb-3 pt-1 border-t border-[#d4af37]/20">
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {region.appellations.map((appellation) => (
-                        <span
-                          key={appellation}
-                          className="px-2.5 py-1 text-xs text-[#8b7355] bg-[#fbf7f0] border border-[#d4af37]/20 rounded-md"
-                        >
-                          {appellation}
-                        </span>
-                      ))}
+                  <div 
+                    className="px-6 pb-6 pt-2 border-t border-[#d4af37]/15 animate-in slide-down duration-500"
+                    style={{
+                      animation: 'slideDown 0.5s ease-in-out',
+                    }}
+                  >
+                    <div className="mt-4 space-y-3">
+                      <div className="flex flex-wrap gap-2.5">
+                        {region.appellations.map((appellation, idx) => (
+                          <span
+                            key={appellation}
+                            className="inline-flex items-center px-3.5 py-1.5 text-xs font-medium text-[#8b7355] bg-[#fbf7f0]/80 border border-[#d4af37]/15 rounded-full backdrop-blur-sm hover:bg-[#f8f4ea] hover:border-[#d4af37]/25 transition-all duration-300"
+                            style={{
+                              animationDelay: `${idx * 30}ms`,
+                            }}
+                          >
+                            {appellation}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
