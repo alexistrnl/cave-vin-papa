@@ -6,6 +6,12 @@ import BottleDetailsModal from "@/components/cave/BottleDetailsModal";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/contexts/AuthContext";
 
+interface RegionViticole {
+  nom: string;
+  description: string;
+  appellations: string[];
+}
+
 interface Clayette {
   id: string;
   name: string;
@@ -109,6 +115,69 @@ const clayettes: Clayette[] = [
 
 const BAS_DE_CAVE_ID = "bas-de-cave";
 
+const REGIONS_VITICOLES: RegionViticole[] = [
+  {
+    nom: "Bordeaux",
+    description: "Région viticole la plus prestigieuse de France, réputée pour ses grands crus.",
+    appellations: ["Médoc", "Saint-Émilion", "Pomerol", "Graves", "Sauternes", "Margaux", "Pauillac"]
+  },
+  {
+    nom: "Bourgogne",
+    description: "Terre d'excellence des vins de pinot noir et chardonnay.",
+    appellations: ["Chablis", "Côte de Nuits", "Côte de Beaune", "Côte Chalonnaise", "Mâconnais", "Beaujolais"]
+  },
+  {
+    nom: "Champagne",
+    description: "Région unique au monde pour les vins effervescents de prestige.",
+    appellations: ["Champagne", "Côte des Blancs", "Montagne de Reims", "Vallée de la Marne"]
+  },
+  {
+    nom: "Rhône",
+    description: "Vallée du Rhône, berceau de vins puissants et généreux.",
+    appellations: ["Côte-Rôtie", "Hermitage", "Châteauneuf-du-Pape", "Gigondas", "Vacqueyras", "Tavel"]
+  },
+  {
+    nom: "Loire",
+    description: "Vallée de la Loire, royaume des vins blancs secs et des vins rosés.",
+    appellations: ["Sancerre", "Pouilly-Fumé", "Muscadet", "Vouvray", "Chinon", "Saumur"]
+  },
+  {
+    nom: "Alsace",
+    description: "Région frontalière aux vins aromatiques et fruités.",
+    appellations: ["Alsace", "Alsace Grand Cru", "Crémant d'Alsace", "Riesling", "Gewurztraminer"]
+  },
+  {
+    nom: "Provence",
+    description: "Terre du rosé et des vins méditerranéens ensoleillés.",
+    appellations: ["Côtes de Provence", "Bandol", "Cassis", "Bellet", "Palette"]
+  },
+  {
+    nom: "Languedoc-Roussillon",
+    description: "Plus vaste région viticole de France, terroirs variés et généreux.",
+    appellations: ["Corbières", "Minervois", "Fitou", "Côtes du Roussillon", "Banyuls"]
+  },
+  {
+    nom: "Sud-Ouest",
+    description: "Région aux cépages autochtones et vins de caractère.",
+    appellations: ["Cahors", "Madiran", "Jurançon", "Gaillac", "Monbazillac"]
+  },
+  {
+    nom: "Beaujolais",
+    description: "Région du gamay, vins fruités et gouleyants.",
+    appellations: ["Beaujolais", "Beaujolais-Villages", "Morgon", "Fleurie", "Brouilly"]
+  },
+  {
+    nom: "Savoie",
+    description: "Vins de montagne aux arômes minéraux et frais.",
+    appellations: ["Savoie", "Apremont", "Chignin", "Roussette de Savoie"]
+  },
+  {
+    nom: "Jura",
+    description: "Petite région aux vins uniques et typés.",
+    appellations: ["Arbois", "Château-Chalon", "Côtes du Jura", "L'Étoile"]
+  }
+];
+
 export default function CavePage() {
   const [selectedClayetteId, setSelectedClayetteId] = useState<string>(
     clayettes[0].id
@@ -121,6 +190,7 @@ export default function CavePage() {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [movingFromKey, setMovingFromKey] = useState<CellKey | null>(null);
   const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null);
+  const [openRegion, setOpenRegion] = useState<string | null>(null);
 
   const isBasDeCaveView = selectedClayetteId === BAS_DE_CAVE_ID;
   const selectedClayette = isBasDeCaveView
@@ -876,6 +946,78 @@ export default function CavePage() {
               ))}
             </div>
           </div>
+      </div>
+
+      {/* Guide des régions viticoles */}
+      <div className="mt-8 w-full">
+        <h2 
+          className="text-xl font-semibold mb-4"
+          style={{
+            fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif',
+            fontWeight: 600,
+            letterSpacing: '0.05em',
+            color: '#b8860b',
+            textShadow: '0 1px 2px rgba(0,0,0,0.08)',
+          }}
+        >
+          Guide des régions viticoles françaises
+        </h2>
+        <div className="space-y-2">
+          {REGIONS_VITICOLES.map((region) => {
+            const isOpen = openRegion === region.nom;
+            return (
+              <div
+                key={region.nom}
+                className="border border-[#d4af37]/30 rounded-lg bg-[#fefcf5] overflow-hidden transition-all"
+              >
+                <button
+                  onClick={() => setOpenRegion(isOpen ? null : region.nom)}
+                  className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-[#faf8f0] transition-colors focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:ring-inset"
+                >
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-[#2a2a2a] text-sm sm:text-base">
+                      {region.nom}
+                    </h3>
+                    {isOpen && (
+                      <p className="text-xs text-[#8b7355] mt-1">
+                        {region.description}
+                      </p>
+                    )}
+                  </div>
+                  <svg
+                    className={`w-5 h-5 text-[#8b7355] transition-transform duration-200 flex-shrink-0 ml-3 ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+                {isOpen && (
+                  <div className="px-4 pb-3 pt-1 border-t border-[#d4af37]/20">
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {region.appellations.map((appellation) => (
+                        <span
+                          key={appellation}
+                          className="px-2.5 py-1 text-xs text-[#8b7355] bg-[#fbf7f0] border border-[#d4af37]/20 rounded-md"
+                        >
+                          {appellation}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Modale Détails */}
