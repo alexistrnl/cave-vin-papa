@@ -115,105 +115,20 @@ const clayettes: Clayette[] = [
 
 const BAS_DE_CAVE_ID = "bas-de-cave";
 
-// Fonction pour obtenir le SVG du contour de chaque région
-const getRegionOutline = (regionName: string): React.ReactNode => {
-  const svgProps: React.SVGProps<SVGSVGElement> = {
-    className: "w-full h-full",
-    fill: "none",
-    stroke: "#b8860b",
-    strokeWidth: 1.5,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-    style: { filter: 'drop-shadow(0 0 1px rgba(184, 134, 11, 0.3))' }
-  };
-
-  switch (regionName) {
-    case "Bordeaux":
-      return (
-        <svg viewBox="0 0 24 24" {...svgProps}>
-          <path d="M6 8 L8 6 L12 7 L16 6 L18 8 L18 12 L16 14 L12 15 L8 14 L6 12 Z" />
-        </svg>
-      );
-    case "Bourgogne":
-      return (
-        <svg viewBox="0 0 24 24" {...svgProps}>
-          <path d="M8 4 L10 5 L12 4 L14 5 L16 4 L16 8 L14 10 L12 9 L10 10 L8 8 Z" />
-          <path d="M8 10 L10 11 L12 10 L14 11 L16 10 L16 14 L14 16 L12 15 L10 16 L8 14 Z" />
-        </svg>
-      );
-    case "Champagne":
-      return (
-        <svg viewBox="0 0 24 24" {...svgProps}>
-          <path d="M10 6 L12 5 L14 6 L14 10 L12 11 L10 10 Z" />
-          <path d="M8 10 L10 11 L12 10 L14 11 L16 10 L16 14 L14 15 L12 14 L10 15 L8 14 Z" />
-        </svg>
-      );
-    case "Rhône":
-      return (
-        <svg viewBox="0 0 24 24" {...svgProps}>
-          <path d="M6 4 L8 6 L10 5 L12 7 L14 5 L16 6 L18 4 L18 12 L16 14 L14 13 L12 15 L10 13 L8 14 L6 12 Z" />
-        </svg>
-      );
-    case "Loire":
-      return (
-        <svg viewBox="0 0 24 24" {...svgProps}>
-          <path d="M4 8 L6 7 L8 8 L10 7 L12 8 L14 7 L16 8 L18 7 L20 8 L20 12 L18 13 L16 12 L14 13 L12 12 L10 13 L8 12 L6 13 L4 12 Z" />
-        </svg>
-      );
-    case "Alsace":
-      return (
-        <svg viewBox="0 0 24 24" {...svgProps}>
-          <path d="M6 6 L8 5 L10 6 L12 5 L14 6 L16 5 L18 6 L18 12 L16 13 L14 12 L12 13 L10 12 L8 13 L6 12 Z" />
-        </svg>
-      );
-    case "Provence":
-      return (
-        <svg viewBox="0 0 24 24" {...svgProps}>
-          <path d="M8 8 L10 7 L12 8 L14 7 L16 8 L16 12 L14 13 L12 12 L10 13 L8 12 Z" />
-          <path d="M6 10 L8 9 L8 11 Z" />
-        </svg>
-      );
-    case "Languedoc-Roussillon":
-      return (
-        <svg viewBox="0 0 24 24" {...svgProps}>
-          <path d="M6 6 L8 5 L10 6 L12 5 L14 6 L16 5 L18 6 L18 10 L16 11 L14 10 L12 11 L10 10 L8 11 L6 10 Z" />
-          <path d="M6 12 L8 11 L10 12 L12 11 L14 12 L16 11 L18 12 L18 16 L16 17 L14 16 L12 17 L10 16 L8 17 L6 16 Z" />
-        </svg>
-      );
-    case "Sud-Ouest":
-      return (
-        <svg viewBox="0 0 24 24" {...svgProps}>
-          <path d="M6 8 L8 7 L10 8 L12 7 L14 8 L16 7 L18 8 L18 12 L16 13 L14 12 L12 13 L10 12 L8 13 L6 12 Z" />
-          <path d="M4 10 L6 9 L6 11 Z" />
-        </svg>
-      );
-    case "Beaujolais":
-      return (
-        <svg viewBox="0 0 24 24" {...svgProps}>
-          <path d="M8 6 L10 5 L12 6 L14 5 L16 6 L16 10 L14 11 L12 10 L10 11 L8 10 Z" />
-        </svg>
-      );
-    case "Savoie":
-      return (
-        <svg viewBox="0 0 24 24" {...svgProps}>
-          <path d="M10 4 L12 5 L14 4 L14 8 L12 9 L10 8 Z" />
-          <path d="M8 10 L10 9 L12 10 L14 9 L16 10 L16 14 L14 15 L12 14 L10 15 L8 14 Z" />
-        </svg>
-      );
-    case "Jura":
-      return (
-        <svg viewBox="0 0 24 24" {...svgProps}>
-          <path d="M10 6 L12 5 L14 6 L14 10 L12 11 L10 10 Z" />
-          <path d="M8 12 L10 11 L12 12 L14 11 L16 12 L16 16 L14 17 L12 16 L10 17 L8 16 Z" />
-        </svg>
-      );
-    default:
-      return (
-        <svg viewBox="0 0 24 24" {...svgProps}>
-          <path d="M6 6 L18 6 L18 18 L6 18 Z" />
-        </svg>
-      );
-  }
+// Mapping des régions vers leurs départements
+const REGION_DEPARTEMENTS: Record<string, string> = {
+  "Bordeaux": "33",
+  "Champagne": "51 · 10 · 52",
+  "Bourgogne": "21 · 58 · 71 · 89",
+  "Alsace": "67 · 68",
+  "Rhône": "07 · 26 · 30 · 69 · 84",
+  "Loire": "44 · 49 · 37 · 41 · 45 · 58",
+  "Provence": "13 · 83 · 84 · 04",
+  "Languedoc-Roussillon": "11 · 30 · 34 · 66",
+  "Sud-Ouest": "31 · 32 · 40 · 46 · 47 · 81 · 82",
+  "Beaujolais": "69",
+  "Savoie": "73 · 74",
+  "Jura": "39"
 };
 
 const REGIONS_VITICOLES: RegionViticole[] = [
@@ -1067,29 +982,27 @@ export default function CavePage() {
       </div>
 
       {/* Section break - Séparation nette avec fond bordeaux visible */}
-      <div className="relative my-12 sm:my-16">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="h-px w-full max-w-xs bg-gradient-to-r from-transparent via-[#d4af37]/50 to-transparent"></div>
-        </div>
+      <div className="relative my-12 sm:my-16 md:my-18 flex items-center justify-center">
+        <div className="h-px w-full max-w-[240px] bg-gradient-to-r from-transparent via-[#d4af37]/60 to-transparent" style={{ boxShadow: '0 0 2px rgba(212, 175, 55, 0.2)' }}></div>
       </div>
 
       {/* Section Guide des régions viticoles - Premium */}
-      <div className="rounded-2xl border border-[#d4af37]/40 bg-[#fefcf5] py-8 sm:py-12 px-5 sm:px-8 shadow-[0_4px_16px_rgba(0,0,0,0.08)] backdrop-blur-sm">
+      <div className="rounded-xl border-2 border-[#d4af37]/50 bg-[#fbf7f0] p-5 sm:p-7 shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
         {/* Header élégant */}
-        <div className="mb-10 text-center">
+        <div className="mb-6">
           <h2 
-            className="text-2xl sm:text-3xl font-semibold mb-2"
+            className="text-lg font-semibold mb-1"
             style={{
               fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif',
               fontWeight: 600,
-              letterSpacing: '0.08em',
+              letterSpacing: '0.05em',
               color: '#b8860b',
-              textShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              textShadow: '0 1px 2px rgba(0,0,0,0.08)',
             }}
           >
             Guide des régions viticoles
           </h2>
-          <p className="text-sm text-[#8b7355]/80 font-light tracking-wide">
+          <p className="text-xs text-[#8b7355] mt-1">
             Régions, sous-régions et appellations françaises
           </p>
         </div>
@@ -1110,11 +1023,11 @@ export default function CavePage() {
                   onClick={() => setOpenRegion(isOpen ? null : region.nom)}
                   className="w-full px-6 py-5 flex items-center gap-4 text-left focus:outline-none focus:ring-2 focus:ring-[#d4af37]/30 focus:ring-inset transition-all duration-300"
                 >
-                  {/* Médaillon avec contour de région */}
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#fefcf5] border border-[#d4af37]/30 flex items-center justify-center group-hover:border-[#d4af37]/50 transition-all duration-300 shadow-sm">
-                    <div className="w-8 h-8">
-                      {getRegionOutline(region.nom)}
-                    </div>
+                  {/* Badge départemental */}
+                  <div className="flex-shrink-0 px-3 py-1.5 rounded-lg bg-[#fefcf5] border border-[#d4af37]/30 flex items-center justify-center group-hover:border-[#d4af37]/50 transition-all duration-300 shadow-sm min-w-[60px]">
+                    <span className="text-xs font-medium text-[#b8860b] tracking-wide whitespace-nowrap">
+                      {REGION_DEPARTEMENTS[region.nom] || ""}
+                    </span>
                   </div>
 
                   {/* Contenu */}
