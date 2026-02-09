@@ -7,6 +7,7 @@ interface BottleDetailsModalProps {
   onClose: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onMarkToDrink: (bottleId: string, toDrink: boolean) => void;
   bottle: Bottle | null;
   isDeleteLoading?: boolean;
 }
@@ -16,6 +17,7 @@ export default function BottleDetailsModal({
   onClose,
   onEdit,
   onDelete,
+  onMarkToDrink,
   bottle,
   isDeleteLoading = false,
 }: BottleDetailsModalProps) {
@@ -108,6 +110,36 @@ export default function BottleDetailsModal({
                 Garde
               </label>
               <p className="text-base text-[#8B2635] font-medium">{bottle.garde}</p>
+            </div>
+          )}
+
+          {/* À boire */}
+          <div>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={bottle.to_drink ?? false}
+                onChange={() => {
+                  if (bottle) {
+                    // Toggle : inverser la valeur actuelle
+                    onMarkToDrink(bottle.id, !(bottle.to_drink ?? false));
+                  }
+                }}
+                className="w-5 h-5 rounded border-[#d4af37]/40 text-[#8B2635] focus:ring-2 focus:ring-[#d4af37] focus:ring-offset-0 cursor-pointer"
+              />
+              <span className="text-sm font-medium text-[#2a2a2a]">À boire</span>
+            </label>
+          </div>
+
+          {/* Commentaire */}
+          {bottle.comment && (
+            <div>
+              <label className="block text-xs font-medium text-[#8b7355] uppercase tracking-wide mb-2">
+                Commentaire
+              </label>
+              <p className="text-sm text-[#2a2a2a] italic leading-relaxed whitespace-pre-wrap">
+                {bottle.comment}
+              </p>
             </div>
           )}
         </div>

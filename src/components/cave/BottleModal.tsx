@@ -11,6 +11,8 @@ export interface Bottle {
   millesime?: number | null;
   region?: string | null;
   couleur?: 'rouge' | 'blanc' | 'rose' | null;
+  to_drink?: boolean;
+  comment?: string | null;
 }
 
 interface BottleModalProps {
@@ -98,6 +100,9 @@ export default function BottleModal({
     const couleurInput = (formData.get("couleur") as string) || "";
     const couleurValue = couleurInput && ['rouge', 'blanc', 'rose'].includes(couleurInput) ? couleurInput as 'rouge' | 'blanc' | 'rose' : null;
     
+    const commentInput = (formData.get("comment") as string) || "";
+    const commentValue = commentInput.trim() ? commentInput.trim() : null;
+    
     const bottle: Omit<Bottle, "id"> = {
       name: formData.get("name") as string,
       price: formData.get("price")
@@ -108,6 +113,7 @@ export default function BottleModal({
       millesime: millesimeValue,
       region: regionValue,
       couleur: couleurValue,
+      comment: commentValue,
     };
 
     if (!bottle.name.trim()) return;
@@ -387,6 +393,32 @@ export default function BottleModal({
             <p className="mt-1 text-xs text-[#8b7355]">
               Formats acceptés: 2027, 2027/2029, 2027-2029
             </p>
+          </div>
+
+          <div>
+            <label
+              htmlFor="comment"
+              className="block text-sm font-medium mb-1 text-[#2a2a2a]"
+            >
+              Commentaire
+            </label>
+            <textarea
+              id="comment"
+              name="comment"
+              rows={4}
+              placeholder="Notes de dégustation, souvenir, occasion..."
+              defaultValue={initialBottle?.comment || ""}
+              onPointerDown={handleInputPointerDown}
+              onTouchStart={handleInputTouchStart}
+              className="w-full px-3 py-2 border border-[#d4af37]/40 rounded-md bg-white text-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] placeholder:text-[#8b7355] resize-y"
+              style={{ 
+                WebkitUserSelect: 'text', 
+                userSelect: 'text', 
+                pointerEvents: 'auto',
+                touchAction: 'auto',
+                WebkitTapHighlightColor: 'rgba(0, 0, 0, 0.1)'
+              }}
+            />
           </div>
 
           <div className="flex gap-3 justify-end pt-4">

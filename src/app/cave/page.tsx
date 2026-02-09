@@ -110,7 +110,7 @@ const clayettes: Clayette[] = [
   { id: "shelf-2", name: "Les Rouges du Domaine Montcalmes & Bourgogne Givry", rows: 6, cols: 6 },
   { id: "shelf-3", name: "Les Rouges", rows: 6, cols: 6 },
   { id: "shelf-4", name: "Les Blancs", rows: 6, cols: 6 },
-  { id: "shelf-5", name: "Domaine Mirabel & Montcalmes Blanc", rows: 6, cols: 6 },
+  { id: "shelf-5", name: "Clayette 5 : Domaine Mirabel", rows: 6, cols: 6 },
 ];
 
 const BAS_DE_CAVE_ID = "bas-de-cave";
@@ -260,6 +260,8 @@ export default function CavePage() {
             millesime: bottle.millesime || null,
             region: bottle.region || null,
             couleur: bottle.couleur || null,
+            to_drink: bottle.to_drink ?? false, // Fallback avec ??
+            comment: bottle.comment || null,
           };
 
           if (bottle.clayette === BAS_DE_CAVE_ID) {
@@ -499,6 +501,7 @@ export default function CavePage() {
           millesime: bottleData.millesime || null,
           region: bottleData.region || null,
           couleur: bottleData.couleur || null,
+          comment: bottleData.comment || null,
         };
         
         console.log("UPDATE payload:", payload);
@@ -542,6 +545,7 @@ export default function CavePage() {
           millesime: bottleData.millesime || null,
           region: bottleData.region || null,
           couleur: bottleData.couleur || null,
+          comment: bottleData.comment || null,
         };
 
         console.log("INSERT payload:", payload);
@@ -636,6 +640,80 @@ export default function CavePage() {
     setIsEditModalOpen(true);
   };
 
+  const markBottleToDrink = async (bottleId: string, toDrink: boolean) => {
+    if (!isReady) {
+      console.warn("Tentative de marquer 'À boire' avant que l'auth soit prête");
+      return;
+    }
+
+    // Trouver la bouteille dans l'état actuel pour optimistic UI
+    const currentCells = isBasDeCaveView ? basDeCaveCells : cells;
+    const setCurrentCells = isBasDeCaveView ? setBasDeCaveCells : setCells;
+    
+    // Trouver la bouteille et sa clé
+    let foundCellKey: CellKey | null = null;
+    let previousBottle: Bottle | null = null;
+    
+    for (const [key, bottle] of Object.entries(currentCells)) {
+      if (bottle.id === bottleId) {
+        foundCellKey = key;
+        previousBottle = { ...bottle };
+        break;
+      }
+    }
+
+    if (!foundCellKey || !previousBottle) {
+      console.warn("Bouteille non trouvée pour optimistic UI");
+      return;
+    }
+
+    // Optimistic UI : mettre à jour l'état local immédiatement
+    setCurrentCells((prev) => {
+      const next = { ...prev };
+      if (next[foundCellKey!]) {
+        next[foundCellKey!] = { ...next[foundCellKey!], to_drink: toDrink };
+      }
+      return next;
+    });
+
+    try {
+      const { error } = await supabase
+        .from("bottles")
+        .update({ to_drink: toDrink })
+        .eq("id", bottleId);
+
+      if (error) {
+        // Rollback : restaurer l'état précédent en cas d'erreur
+        setCurrentCells((prev) => {
+          const next = { ...prev };
+          if (next[foundCellKey!] && previousBottle) {
+            next[foundCellKey!] = previousBottle;
+          }
+          return next;
+        });
+        const errorMessage = error.message || error.hint || String(error);
+        console.error("Erreur lors de la mise à jour 'À boire':", errorMessage, error);
+        alert(`Erreur lors de la mise à jour: ${errorMessage}`);
+        return;
+      }
+
+      // Recharger depuis Supabase pour garantir la synchronisation
+      await loadBottles();
+    } catch (error) {
+      // Rollback : restaurer l'état précédent en cas d'erreur
+      setCurrentCells((prev) => {
+        const next = { ...prev };
+        if (next[foundCellKey!] && previousBottle) {
+          next[foundCellKey!] = previousBottle;
+        }
+        return next;
+      });
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error("Erreur lors de la mise à jour 'À boire':", errorMessage, error);
+      alert(`Une erreur inattendue s'est produite: ${errorMessage}`);
+    }
+  };
+
   const getDisplayLabel = (rowId: string, slotIndex: number): string => {
     const rowIndex = SHELF_LAYOUT.findIndex((r) => r.rowId === rowId);
     if (rowIndex === -1) return "";
@@ -708,7 +786,18 @@ export default function CavePage() {
     }
 
     // Styles selon la couleur - différenciation visuelle uniquement par le fond (aucun texte)
+    // Si to_drink est true, appliquer un fond vert sauge premium très léger
     const getCouleurStyles = () => {
+      // Si "À boire" est coché, appliquer un fond vert sauge premium (très pâle, pas fluo)
+      if (bottle.to_drink === true) {
+        return {
+          bg: "bg-[#f0f7f0]",
+          border: "border-[#a5d6a7]/40",
+          hoverBg: "hover:bg-[#e8f5e9]",
+          hoverBorder: "hover:border-[#a5d6a7]/60",
+        };
+      }
+
       if (!bottle.couleur) {
         return {
           bg: "bg-[#fbf7f0]",
@@ -800,6 +889,11 @@ export default function CavePage() {
             {extraInfo.join(" • ")}
           </span>
         )}
+        {bottle.comment && (
+          <span className="text-[8px] text-[#8b7355]/60 mt-1 italic truncate w-full text-center whitespace-nowrap overflow-hidden text-ellipsis">
+            {bottle.comment}
+          </span>
+        )}
       </button>
     );
   };
@@ -813,23 +907,31 @@ export default function CavePage() {
     );
   }
 
+  // Calculer le nombre total de bouteilles dans la cave
+  const totalBottles = Object.keys(cells).length + Object.keys(basDeCaveCells).length;
+
   return (
     <main className="flex flex-col w-full">
       {/* Section Cave - Card séparée */}
       <div className="rounded-xl border-2 border-[#d4af37]/50 bg-[#fbf7f0] p-5 sm:p-7 shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
         <div className="mb-6">
-          <h2 
-            className="text-lg font-semibold mb-1"
-            style={{
-              fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif',
-              fontWeight: 600,
-              letterSpacing: '0.05em',
-              color: '#b8860b',
-              textShadow: '0 1px 2px rgba(0,0,0,0.08)',
-            }}
-          >
-            Votre cave
-          </h2>
+          <div className="flex items-center gap-3">
+            <h2 
+              className="text-lg font-semibold mb-1"
+              style={{
+                fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif',
+                fontWeight: 600,
+                letterSpacing: '0.05em',
+                color: '#b8860b',
+                textShadow: '0 1px 2px rgba(0,0,0,0.08)',
+              }}
+            >
+              Votre cave
+            </h2>
+            <span className="text-sm font-medium text-[#8b7355] bg-[#d4af37]/20 px-3 py-1 rounded-full border border-[#d4af37]/30">
+              {totalBottles} {totalBottles === 1 ? 'bouteille' : 'bouteilles'}
+            </span>
+          </div>
         </div>
         <div className="w-full mb-6">
         <div className="mb-5">
@@ -1105,6 +1207,7 @@ export default function CavePage() {
         onClose={handleDetailsModalClose}
         onEdit={handleEditClick}
         onDelete={handleDelete}
+        onMarkToDrink={markBottleToDrink}
         bottle={
           selectedCellKey
             ? (isBasDeCaveView ? basDeCaveCells[selectedCellKey] : cells[selectedCellKey]) || null
