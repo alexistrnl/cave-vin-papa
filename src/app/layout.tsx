@@ -80,7 +80,7 @@ export default function RootLayout({
                     textShadow: '0 1px 2px rgba(0,0,0,0.35)',
                   }}
                 >
-                  Le Cave de Tournel
+                  La Cave du Tournel
                 </h1>
               </div>
             </header>

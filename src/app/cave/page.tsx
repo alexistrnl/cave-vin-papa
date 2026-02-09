@@ -34,7 +34,7 @@ const SHELF_LAYOUT = [
 const NB_COLONNES = Math.max(...SHELF_LAYOUT.map(row => row.count));
 
 // Taille fixe uniforme pour toutes les cases
-const CELL_HEIGHT = "h-[72px]";
+const CELL_HEIGHT = "h-[96px]";
 
 const generateSlotId = (rowId: string, slotIndex: number): string => {
   return `${rowId}c${slotIndex + 1}`;
@@ -106,7 +106,7 @@ const convertPositionToSlotId = (position: number): string => {
 };
 
 const clayettes: Clayette[] = [
-  { id: "shelf-1", name: "Mas de L Julien", rows: 6, cols: 6 },
+  { id: "shelf-1", name: "Mas Jullien", rows: 6, cols: 6 },
   { id: "shelf-2", name: "Les Rouges du Domaine Montcalmes & Bourgogne Givry", rows: 6, cols: 6 },
   { id: "shelf-3", name: "Les Rouges", rows: 6, cols: 6 },
   { id: "shelf-4", name: "Les Blancs", rows: 6, cols: 6 },
@@ -845,12 +845,12 @@ export default function CavePage() {
         </span>
         {/* Domaine (si renseigné, avant la cuvée) */}
         {bottle.domaine && (
-          <span className="text-[10px] text-[#8b7355] font-medium text-center w-full truncate whitespace-nowrap overflow-hidden text-ellipsis">
+          <span className="text-[10px] text-[#8b7355] font-medium text-center w-full line-clamp-2 break-words">
             {bottle.domaine}
           </span>
         )}
         {/* Cuvée */}
-        <span className="font-semibold text-[#2a2a2a] text-xs text-center w-full truncate whitespace-nowrap overflow-hidden text-ellipsis">
+        <span className="font-semibold text-[#2a2a2a] text-xs text-center w-full line-clamp-2 break-words">
           {bottle.name}
         </span>
         {/* Année (millesime) */}
@@ -871,7 +871,7 @@ export default function CavePage() {
         ) : null}
         {/* Commentaire en dernier */}
         {bottle.comment && (
-          <span className="text-[8px] text-[#8b7355]/60 mt-1 italic truncate w-full text-center whitespace-nowrap overflow-hidden text-ellipsis">
+          <span className="text-[8px] text-[#8b7355]/60 mt-1 italic line-clamp-2 w-full text-center break-words">
             {bottle.comment}
           </span>
         )}
