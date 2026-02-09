@@ -106,7 +106,7 @@ const convertPositionToSlotId = (position: number): string => {
 };
 
 const clayettes: Clayette[] = [
-  { id: "shelf-1", name: "Mas Julien", rows: 6, cols: 6 },
+  { id: "shelf-1", name: "Mas de L Julien", rows: 6, cols: 6 },
   { id: "shelf-2", name: "Les Rouges du Domaine Montcalmes & Bourgogne Givry", rows: 6, cols: 6 },
   { id: "shelf-3", name: "Les Rouges", rows: 6, cols: 6 },
   { id: "shelf-4", name: "Les Blancs", rows: 6, cols: 6 },
