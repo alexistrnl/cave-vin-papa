@@ -34,7 +34,7 @@ const SHELF_LAYOUT = [
 const NB_COLONNES = Math.max(...SHELF_LAYOUT.map(row => row.count));
 
 // Taille fixe uniforme pour toutes les cases
-const CELL_HEIGHT = "h-[56px]";
+const CELL_HEIGHT = "h-[72px]";
 
 const generateSlotId = (rowId: string, slotIndex: number): string => {
   return `${rowId}c${slotIndex + 1}`;
@@ -765,25 +765,6 @@ export default function CavePage() {
       );
     }
 
-    const parts: (string | React.ReactElement)[] = [];
-    if (bottle.price !== undefined && bottle.price !== null) {
-      parts.push(`${bottle.price}€`);
-    }
-    if (bottle.garde) {
-      parts.push(bottle.garde);
-    }
-    
-    // Affichage discret des nouveaux champs si présents
-    const extraInfo: string[] = [];
-    if (bottle.domaine) {
-      extraInfo.push(bottle.domaine);
-    }
-    if (bottle.millesime) {
-      extraInfo.push(String(bottle.millesime));
-    }
-    if (bottle.region) {
-      extraInfo.push(bottle.region);
-    }
 
     // Styles selon la couleur - différenciation visuelle uniquement par le fond (aucun texte)
     // Si to_drink est true, appliquer un fond vert sauge premium très léger
@@ -862,33 +843,27 @@ export default function CavePage() {
         <span className="absolute top-1 left-1 text-[10px] text-[#8b7355] opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity z-10">
           {displayLabel}
         </span>
+        {/* Nom du vin */}
         <span className="font-semibold text-[#2a2a2a] text-xs text-center w-full truncate whitespace-nowrap overflow-hidden text-ellipsis">
           {bottle.name}
         </span>
-        {parts.length > 0 && (
+        {/* Année (millesime) */}
+        {bottle.millesime && (
           <span className="text-[10px] text-[#8b7355] mt-0.5 truncate w-full text-center whitespace-nowrap overflow-hidden text-ellipsis">
-            {parts.map((part, index) => {
-              const isGarde = typeof part === "string" && part.startsWith("G");
-              const isLast = index === parts.length - 1;
-              
-              return (
-                <span key={index}>
-                  {isGarde ? (
-                    <span className="text-[#8B2635] font-medium">{part}</span>
-                  ) : (
-                    part
-                  )}
-                  {!isLast && <span className="mx-1">•</span>}
-                </span>
-              );
-            })}
+            {bottle.millesime}
           </span>
         )}
-        {extraInfo.length > 0 && (
-          <span className="text-[9px] text-[#8b7355]/70 mt-0.5 truncate w-full text-center whitespace-nowrap overflow-hidden text-ellipsis">
-            {extraInfo.join(" • ")}
+        {/* Prix et garde */}
+        {(bottle.price !== undefined && bottle.price !== null) || bottle.garde ? (
+          <span className="text-[10px] text-[#8b7355] mt-0.5 truncate w-full text-center whitespace-nowrap overflow-hidden text-ellipsis">
+            {bottle.price !== undefined && bottle.price !== null && `${bottle.price}€`}
+            {bottle.price !== undefined && bottle.price !== null && bottle.garde && <span className="mx-1">•</span>}
+            {bottle.garde && (
+              <span className="text-[#8B2635] font-medium">{bottle.garde}</span>
+            )}
           </span>
-        )}
+        ) : null}
+        {/* Commentaire en dernier */}
         {bottle.comment && (
           <span className="text-[8px] text-[#8b7355]/60 mt-1 italic truncate w-full text-center whitespace-nowrap overflow-hidden text-ellipsis">
             {bottle.comment}
