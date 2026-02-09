@@ -49,10 +49,10 @@ export default function BottleDetailsModal({
         </h2>
 
         <div className="space-y-4 mb-6">
-          {/* Nom */}
+          {/* Cuvée */}
           <div>
             <label className="block text-xs font-medium text-[#8b7355] uppercase tracking-wide mb-1">
-              Nom
+              Cuvée
             </label>
             <p className="text-lg font-semibold text-[#2a2a2a]">{bottle.name}</p>
           </div>

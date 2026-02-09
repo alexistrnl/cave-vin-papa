@@ -843,7 +843,13 @@ export default function CavePage() {
         <span className="absolute top-1 left-1 text-[10px] text-[#8b7355] opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity z-10">
           {displayLabel}
         </span>
-        {/* Nom du vin */}
+        {/* Domaine (si renseigné, avant la cuvée) */}
+        {bottle.domaine && (
+          <span className="text-[10px] text-[#8b7355] font-medium text-center w-full truncate whitespace-nowrap overflow-hidden text-ellipsis">
+            {bottle.domaine}
+          </span>
+        )}
+        {/* Cuvée */}
         <span className="font-semibold text-[#2a2a2a] text-xs text-center w-full truncate whitespace-nowrap overflow-hidden text-ellipsis">
           {bottle.name}
         </span>

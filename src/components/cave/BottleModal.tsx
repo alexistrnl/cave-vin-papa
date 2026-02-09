@@ -206,7 +206,7 @@ export default function BottleModal({
               htmlFor="name"
               className="block text-sm font-medium mb-1 text-[#2a2a2a]"
             >
-              Nom <span className="text-red-600">*</span>
+              Cuvée <span className="text-red-600">*</span>
             </label>
             <input
               ref={nameInputRef}
