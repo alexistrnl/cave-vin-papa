@@ -843,14 +843,14 @@ export default function CavePage() {
         <span className="absolute top-1 left-1 text-[10px] text-[#8b7355] opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity z-10">
           {displayLabel}
         </span>
-        {/* Domaine (si renseigné, avant la cuvée) */}
+        {/* Domaine (en avant, en noir et gras) */}
         {bottle.domaine && (
-          <span className="text-[10px] text-[#8b7355] font-medium text-center w-full line-clamp-2 break-words">
+          <span className="font-semibold text-[#2a2a2a] text-xs text-center w-full line-clamp-2 break-words">
             {bottle.domaine}
           </span>
         )}
         {/* Cuvée */}
-        <span className="font-semibold text-[#2a2a2a] text-xs text-center w-full line-clamp-2 break-words">
+        <span className="text-[10px] text-[#8b7355] font-medium text-center w-full line-clamp-2 break-words">
           {bottle.name}
         </span>
         {/* Année (millesime) */}
@@ -890,6 +890,26 @@ export default function CavePage() {
 
   // Calculer le nombre total de bouteilles dans la cave
   const totalBottles = Object.keys(cells).length + Object.keys(basDeCaveCells).length;
+  
+  // Calculer la valeur totale de la cave selon les prix
+  const calculateCaveValue = () => {
+    let totalValue = 0;
+    // Parcourir toutes les bouteilles dans les clayettes
+    Object.values(cells).forEach(bottle => {
+      if (bottle.price !== undefined && bottle.price !== null) {
+        totalValue += bottle.price;
+      }
+    });
+    // Parcourir toutes les bouteilles dans le bas de cave
+    Object.values(basDeCaveCells).forEach(bottle => {
+      if (bottle.price !== undefined && bottle.price !== null) {
+        totalValue += bottle.price;
+      }
+    });
+    return totalValue;
+  };
+  
+  const caveValue = calculateCaveValue();
 
   return (
     <main className="flex flex-col w-full">
@@ -910,8 +930,13 @@ export default function CavePage() {
               Votre cave
             </h2>
             <span className="text-sm font-medium text-[#8b7355] bg-[#d4af37]/20 px-3 py-1 rounded-full border border-[#d4af37]/30">
-              {totalBottles} {totalBottles === 1 ? 'bouteille' : 'bouteilles'}
+              Nombre de bouteilles : {totalBottles}
             </span>
+            {caveValue > 0 && (
+              <span className="text-sm font-medium text-[#8b7355] bg-[#d4af37]/20 px-3 py-1 rounded-full border border-[#d4af37]/30">
+                Valeur de la cave : {caveValue.toFixed(2)}€
+              </span>
+            )}
           </div>
         </div>
         <div className="w-full mb-6">
